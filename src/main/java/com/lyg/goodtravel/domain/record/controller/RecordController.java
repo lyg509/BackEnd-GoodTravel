@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.record.controller;
 
+import com.lyg.goodtravel.domain.record.request.RecordModifyPostReq;
 import com.lyg.goodtravel.domain.record.request.RecordRegisterPostReq;
 import com.lyg.goodtravel.domain.record.service.RecordService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
@@ -9,8 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Api("여행 레코드(일기) API")
 @Slf4j
@@ -26,13 +26,30 @@ public class RecordController {
 
     @ApiOperation(value = "여행 레코드(일기) 등록")
     @PostMapping("")
-    public ResponseEntity<? extends BaseResponseBody> recordRegister (
+    public ResponseEntity<? extends BaseResponseBody> recordRegister(
             RecordRegisterPostReq recordRegisterPostReq) {
+
         log.info("recordRegister - Call");
 
-        if(recordService.recordRegisterByUser(recordRegisterPostReq) == SUCCESS) {
+        if (recordService.recordRegisterByUser(recordRegisterPostReq) == SUCCESS) {
             return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
-        } else return ResponseEntity.status(404).body(BaseResponseBody.of(403,"There is " +
+        } else return ResponseEntity.status(404).body(BaseResponseBody.of(403, "There is " +
                 "no completed course."));
     }
+
+    @ApiOperation(value = "여행 레코드(일기) 수정")
+    @PutMapping("")
+    public ResponseEntity<? extends BaseResponseBody> recordModify(
+            @RequestBody RecordModifyPostReq recordRegisterPostReq) {
+
+        log.info("recordModify = Call");
+
+        if (recordService.recordModifyByUser(recordRegisterPostReq) == SUCCESS) {
+            return ResponseEntity.status(201).body(BaseResponseBody.of(201, "SUCCESS"));
+        } else
+            log.error("qnaQuestionModify - This questionId doesn't exist.");
+            return ResponseEntity.status(404).body(BaseResponseBody.of(403, "There is" +
+                "no completed course.l"));
+    }
+
 }

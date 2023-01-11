@@ -36,4 +36,14 @@ public class Tour {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @ApiModelProperty(value = "관광지 방문 종료 날짜 및 시간", required = true, example = "2022-03-17 19:00:00")
     private LocalDateTime tourEnd;
+
+    @ApiModelProperty(value = "코스 시작", example = "1")
+    @Id
+    @Column(name = "is_start")
+    private boolean isStart;
+
+    @ApiModelProperty(value = "코스 종료", example = "1")
+    @Id
+    @Column(name = "is_end")
+    private boolean isEnd;
 }

@@ -1,7 +1,9 @@
 package com.lyg.goodtravel.domain.tourtest.service;
 
+import com.lyg.goodtravel.domain.tourtest.request.TourTestResultPostReq;
+
 public interface TourTestService {
 
-    int tourTestResultByUser(int userId, int tourTestId);
+    int tourTestResultByUser(TourTestResultPostReq tourTestResultPostReq);
 
 }

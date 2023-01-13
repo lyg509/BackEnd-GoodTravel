@@ -1,18 +1,22 @@
 package com.lyg.goodtravel.domain.record.controller;
 
+import com.lyg.goodtravel.domain.course.db.entity.CourseData;
+import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
+import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
+import com.lyg.goodtravel.domain.record.response.TouristNameVisitGetRes;
 import com.lyg.goodtravel.domain.record.service.TourService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Api("코스 시작,종료 기록 및 관광지 방문 API")
 @Slf4j
@@ -45,12 +49,10 @@ public class TourController {
     @ApiOperation(value = "여행 종료")
     @PutMapping("/tour-end")
     public ResponseEntity<? extends BaseResponseBody> courseEnd(
-            @PathVariable @ApiParam(value = "회원 구분 번호", required = true) int userId,
-            @PathVariable @ApiParam(value = "코스 구분 번호", required = true) int courseId)
-    {
+            @RequestBody TourEndPostReq tourEndPostReq) {
         log.info("tourEndByUser - Call");
 
-        if (tourService.courseEndByUser(userId, courseId) != FAIL) {
+        if (tourService.courseEndByUser(tourEndPostReq) == SUCCESS) {
             return ResponseEntity.status(201).body(
                     BaseResponseBody.of(201, "Success"));
         } else
@@ -59,20 +61,33 @@ public class TourController {
     }
 
     @ApiOperation(value = "코스에 대한 관광지 방문")
-    @PutMapping("/tour-stamp/{userId}/{courseId}/{courseDataId}")
-    public ResponseEntity<? extends BaseResponseBody> touristVisit(
-            @PathVariable @ApiParam(value = "회원 구분 번호", required = true) int userId,
-            @PathVariable @ApiParam(value = "코스 구분 번호", required = true) int courseId,
-            @PathVariable @ApiParam(value = "코스에 대한 관광지 구분 번호", required = true) int courseDataId)
-    {
+    @PutMapping("/tour-stamp")
+    public ResponseEntity<? extends BaseResponseBody> touristVisit(@RequestBody TouristVisitPostReq touristVisitPostReq) {
         log.info("tourEndByUser - Call");
-        if (tourService.touristVisitByUser(userId, courseId, courseDataId) == SUCCESS) {
-            return ResponseEntity
-                    .status(201)
-                    .body(BaseResponseBody.of(201, "Success"));
+
+        if (tourService.touristVisitByUser(touristVisitPostReq) == SUCCESS) {
+            return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
         } else
-            return ResponseEntity
-                    .status(404)
-                    .body(BaseResponseBody.of(403, "There is no travel course in progress."));
+            return ResponseEntity.status(404).body(BaseResponseBody.of(403, "There is no travel course in progress."));
+    }
+
+    @ApiOperation(value = "방문한 관광지 명 조회")
+    @GetMapping("/tour-stamp/{userId}/{courseId}")
+    public ResponseEntity<TouristNameVisitGetRes> touristNameVisit(
+            @PathVariable("userId") int userId,
+            @PathVariable("courseId") int courseId
+    ) {
+        log.info("touristVisit - Call");
+
+        List<CourseData> touristNameVisitList = tourService.touristNameVisitByUser(userId, courseId);
+
+        if (touristNameVisitList != null && !touristNameVisitList.isEmpty()) {
+            return ResponseEntity.status(200).body(TouristNameVisitGetRes
+                    .of(200, "Success", touristNameVisitList));
+        } else {
+            log.error("touristNameVisit - stamp doesn't exist");
+            return ResponseEntity.status(400).body(TouristNameVisitGetRes
+                    .of(400, "stamp doesn't exist", null));
+        }
     }
 }

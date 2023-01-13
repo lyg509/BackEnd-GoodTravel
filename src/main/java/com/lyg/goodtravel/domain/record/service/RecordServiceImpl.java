@@ -3,6 +3,7 @@ package com.lyg.goodtravel.domain.record.service;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
 import com.lyg.goodtravel.domain.record.db.repository.RecordRepository;
 import com.lyg.goodtravel.domain.record.db.repository.TourRepository;
+import com.lyg.goodtravel.domain.record.db.repository.TourStampRepository;
 import com.lyg.goodtravel.domain.record.request.RecordModifyPostReq;
 import com.lyg.goodtravel.domain.record.request.RecordRegisterPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     TourRepository tourRepository;
 
+    @Autowired
+    TourStampRepository tourStampRepository;
+
     private static final int SUCCESS = 1;
     private static final int FAIL = -1;
 
@@ -29,8 +33,8 @@ public class RecordServiceImpl implements RecordService {
 
         Record record = new Record();
 
-        //코스 완주 이력이 있을 때, 여행 레코드 작성 가능
-        if (tourRepository.existsTourByUserIdAndCourseId(userId, courseId)) {
+        // 코스 시작 이력 여부 확인, 스탬프가 하나라도 찍혀 있을 때 작성 가능 하게 설정 --> 여행 레코드 작성 활성화
+        if(tourRepository.existsTourByUserIdAndCourseId(userId, courseId) && tourStampRepository.isStampByUserIdandCourseId(userId, courseId) > 0) {
             record.setCourseId(courseId);
             record.setUserId(userId);
             record.setRecordContent(contents);

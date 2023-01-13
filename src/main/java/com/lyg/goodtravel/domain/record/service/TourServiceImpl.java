@@ -1,9 +1,15 @@
 package com.lyg.goodtravel.domain.record.service;
 
 import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
-import com.lyg.goodtravel.domain.record.db.entity.*;
+import com.lyg.goodtravel.domain.record.db.entity.Tour;
+import com.lyg.goodtravel.domain.record.db.entity.TourID;
+import com.lyg.goodtravel.domain.record.db.entity.TourStamp;
+import com.lyg.goodtravel.domain.record.db.entity.TourStampID;
 import com.lyg.goodtravel.domain.record.db.repository.TourRepository;
+import com.lyg.goodtravel.domain.record.db.repository.TourRepositorySpp;
 import com.lyg.goodtravel.domain.record.db.repository.TourStampRepository;
+import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
+import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +26,9 @@ public class TourServiceImpl implements TourService {
 
     @Autowired
     CourseDataRepository courseDataRepository;
+
+    @Autowired
+    TourRepositorySpp tourRepositorySpp;
 
     private static final int SUCCESS = 1;
     private static final int FAIL = -1;
@@ -40,7 +49,7 @@ public class TourServiceImpl implements TourService {
         TourStamp tourStamp = new TourStamp();
 
         // 코스 번호 받아서 코스 안에 관광지 개수 카운트 -> 관광지 개수만큼 stamp에 넣기
-        int touristCount = courseDataRepository.courDataCount(courseId);
+        int touristCount = courseDataRepository.courseDataCount(courseId);
 
         for (int i = 1; i <= touristCount; i++) {
             tourStamp.setCourseId(courseId);
@@ -54,26 +63,31 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public int courseEndByUser(int userId, int courseId) {
+    public int courseEndByUser(TourEndPostReq tourEndPostReq) {
         TourID tourID = new TourID();
-        tourID.setUserId(userId);
-        tourID.setCourseId(courseId);
+        tourID.setUserId(tourEndPostReq.getUserId());
+        tourID.setCourseId(tourEndPostReq.getCourseId());
 
         if(tourRepository.findById(tourID).isPresent()) {
-            return tourRepository.tourEndByUser(userId, courseId);
+            return tourRepository.tourEndByUser(tourEndPostReq.getUserId(), tourEndPostReq.getCourseId());
         } else return FAIL;
     }
 
     @Override
-    public int touristVisitByUser(int userId, int courseId, int courseDataId) {
+    public int touristVisitByUser(TouristVisitPostReq touristVisitPostReq) {
         TourStampID tourStampID = new TourStampID();
-        tourStampID.setUserId(userId);
-        tourStampID.setCourseId(courseId);
-        tourStampID.setCourseDataId(courseDataId);
+        tourStampID.setUserId(touristVisitPostReq.getUserId());
+        tourStampID.setCourseId(touristVisitPostReq.getCourseId());
+        tourStampID.setCourseDataId(touristVisitPostReq.getCourseDataId());
 
         if(tourStampRepository.findById(tourStampID).isPresent()) {
-            return tourStampRepository.touristVisitByUser(userId, courseId, courseDataId);
+            return tourStampRepository.touristVisitByUser(touristVisitPostReq.getUserId(), touristVisitPostReq.getCourseId(), touristVisitPostReq.getCourseDataId());
         }
         return FAIL;
     }
+
+   /* @Override
+    public List<CourseData> touristNameVisitByUser(int userId, int courseId) {
+        return tourRepositorySpp.findVisitTouristName(userId, courseId);
+    }*/
 }

@@ -1,12 +1,11 @@
 package com.lyg.goodtravel.domain.course.service;
 
-import com.lyg.goodtravel.domain.course.db.entity.Bookmark;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
-import com.lyg.goodtravel.domain.course.request.BookmarkRegisterPostReq;
 import com.lyg.goodtravel.domain.course.request.CourseHitsPostReq;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CourseService {
     int courseHits(CourseHitsPostReq courseHitsPostReq);
+    Page<Course> popularCourse(Pageable pageable);
 }

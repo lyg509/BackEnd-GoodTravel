@@ -1,12 +1,16 @@
 package com.lyg.goodtravel.domain.course.controller;
 
+import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.request.CourseHitsPostReq;
+import com.lyg.goodtravel.domain.course.response.PopularCourseGetRes;
 import com.lyg.goodtravel.domain.course.service.CourseService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +39,16 @@ public class CourseController {
             log.error("courseHits - The course doesn't exist.");
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "The course doesn't exist."));
         }
+    }
+
+    @ApiOperation("인기 코스")
+    @GetMapping("/course-hits")
+    public ResponseEntity<PopularCourseGetRes> popularCourse (int page, int size) {
+
+        log.info("popularCourse - Call");
+
+        Page<Course> popularCourseList = courseService.popularCourse(PageRequest.of(page - 1 , size));
+
+        return ResponseEntity.status(200).body(PopularCourseGetRes.of(200, "Success", popularCourseList));
     }
 }

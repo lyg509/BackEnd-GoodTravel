@@ -2,6 +2,8 @@ package com.lyg.goodtravel.domain.record.db.repository;
 
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.entity.QCourseData;
+import com.lyg.goodtravel.domain.record.db.entity.QTag;
+import com.lyg.goodtravel.domain.record.db.entity.QTagCode;
 import com.lyg.goodtravel.domain.record.db.entity.QTourStamp;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class TourRepositorySpp {
     private JPAQueryFactory jpaQueryFactory;
     QTourStamp qTourStamp = QTourStamp.tourStamp;
     QCourseData qCourseData = QCourseData.courseData;
+
+    QTagCode qTagCode = QTagCode.tagCode;
+    QTag qTag = QTag.tag;
 
     public List<CourseData> findVisitTouristName (int userId, int courseId) {
         return jpaQueryFactory.select(qCourseData).from(qCourseData)

@@ -3,10 +3,7 @@ package com.lyg.goodtravel.domain.record.service;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
 import com.lyg.goodtravel.domain.record.db.entity.*;
-import com.lyg.goodtravel.domain.record.db.repository.RecordTagRepository;
-import com.lyg.goodtravel.domain.record.db.repository.TourRepository;
-import com.lyg.goodtravel.domain.record.db.repository.TourRepositorySpp;
-import com.lyg.goodtravel.domain.record.db.repository.TourStampRepository;
+import com.lyg.goodtravel.domain.record.db.repository.*;
 import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
 import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
@@ -30,6 +27,9 @@ public class TourServiceImpl implements TourService {
 
     @Autowired
     RecordTagRepository recordTagRepository;
+
+    @Autowired
+    TagRepository tagRepository;
 
     @Autowired
     TourRepositorySpp tourRepositorySpp;
@@ -112,5 +112,10 @@ public class TourServiceImpl implements TourService {
             recordTagRepository.save(recordTag);
         }
         return SUCCESS;
+    }
+
+    @Override
+    public List<String> tagList() {
+        return tagRepository.findTagList();
     }
 }

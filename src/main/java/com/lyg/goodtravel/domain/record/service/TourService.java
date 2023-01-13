@@ -13,4 +13,5 @@ public interface TourService {
     int touristVisitByUser(TouristVisitPostReq touristVisitPostReq);
     List<CourseData> touristNameVisitByUser(int userId, int courseId);
     int tagRegisterByUser(TagRegisterPostReq tagRegisterPostReq);
+    List<String> tagList();
 }

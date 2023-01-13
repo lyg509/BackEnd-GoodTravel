@@ -4,13 +4,12 @@ import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
 import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
+import com.lyg.goodtravel.domain.record.response.TagListGetRes;
 import com.lyg.goodtravel.domain.record.response.TouristNameVisitGetRes;
 import com.lyg.goodtravel.domain.record.service.TourService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -92,6 +91,22 @@ public class TourController {
         }
     }
 
+    @ApiOperation(value = "여행 코스 태그 목록")
+    @GetMapping("/tour-tag")
+    public ResponseEntity<TagListGetRes> tagList () {
+        log.info("tagList - Call");
+
+        List<String> tagList = tourService.tagList();
+
+        if (tagList != null && !tagList.isEmpty()) {
+            return ResponseEntity.status(200).body(TagListGetRes.of(200, "Success", tagList));
+        } else {
+            log.error("tagList - tag doesn't exist");
+            return ResponseEntity.status(400).body(TagListGetRes.of(400, "stamp doesn't exist", null));
+        }
+    }
+
+
     @ApiOperation(value = "여행 코스 태그 등록")
     @PostMapping("/tour-tag")
     public ResponseEntity<? extends BaseResponseBody> tagRegister(@RequestBody TagRegisterPostReq tagRegisterPostReq) {
@@ -99,6 +114,9 @@ public class TourController {
 
         if(tourService.tagRegisterByUser(tagRegisterPostReq) == SUCCESS) {
             return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
-        }else return ResponseEntity.status(404).body(BaseResponseBody.of(403, "Tag doesn't exist"));
+        }else {
+            log.error("Tag doesn't exist");
+            return ResponseEntity.status(404).body(BaseResponseBody.of(403, "Tag doesn't exist"));
+        }
     }
 }

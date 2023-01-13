@@ -36,4 +36,13 @@ public class CourseRepositorySpp {
         return new PageImpl<>(list.getResults(), pageable, list.getTotal());
     }
 
+    public Page<Course> findCourseSearch (String courseName, Pageable pageable) {
+        QueryResults<Course> list = jpaQueryFactory.select(qCourse).from(qCourse)
+                .where(qCourse.courseName.contains(courseName))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize()).fetchResults();
+
+        return new PageImpl<>(list.getResults(), pageable, list.getTotal());
+    }
+
 }

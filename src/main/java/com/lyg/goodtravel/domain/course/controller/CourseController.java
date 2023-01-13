@@ -2,11 +2,13 @@ package com.lyg.goodtravel.domain.course.controller;
 
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.request.CourseHitsPostReq;
+import com.lyg.goodtravel.domain.course.response.CourseSearchGetRes;
 import com.lyg.goodtravel.domain.course.response.PopularCourseGetRes;
 import com.lyg.goodtravel.domain.course.service.CourseService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,5 +52,15 @@ public class CourseController {
         Page<Course> popularCourseList = courseService.popularCourse(PageRequest.of(page - 1 , size));
 
         return ResponseEntity.status(200).body(PopularCourseGetRes.of(200, "Success", popularCourseList));
+    }
+
+    @ApiOperation("코스 검색하기")
+    @GetMapping("/{courseName}")
+    public ResponseEntity<CourseSearchGetRes> courseSearch (@ApiParam(value = "코스 명") @PathVariable("courseName") String courseName, int page, int size) {
+        log.info("courseSearch - Call");
+
+        Page<Course> courseSearchList = courseService.courseSearch(courseName, PageRequest.of(page - 1, size));
+
+        return ResponseEntity.status(200).body(CourseSearchGetRes.of(200, "Success", courseSearchList));
     }
 }

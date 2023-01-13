@@ -1,4 +1,4 @@
-package com.lyg.goodtravel.domain.tourtest.db.entity;
+package com.lyg.goodtravel.domain.record.db.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TourTestID implements Serializable {
-    private int tourTestId;
+public class TourID implements Serializable {
+    int userId;
+    int courseId;
 }

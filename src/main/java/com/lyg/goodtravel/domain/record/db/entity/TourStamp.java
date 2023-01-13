@@ -31,7 +31,6 @@ public class TourStamp {
     private int userId;
 
     @ApiModelProperty(value = "관광지 방문 여부", example = "true")
-    @Id
     @Column(name = "is_stamp")
-    private int isStamp;
+    private boolean isStamp;
 }

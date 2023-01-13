@@ -1,6 +1,7 @@
 package com.lyg.goodtravel.domain.record.controller;
 
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
+import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
 import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
 import com.lyg.goodtravel.domain.record.response.TouristNameVisitGetRes;
@@ -89,5 +90,15 @@ public class TourController {
             return ResponseEntity.status(400).body(TouristNameVisitGetRes
                     .of(400, "stamp doesn't exist", null));
         }
+    }
+
+    @ApiOperation(value = "여행 코스 태그 등록")
+    @PostMapping("/tour-tag")
+    public ResponseEntity<? extends BaseResponseBody> tagRegister(@RequestBody TagRegisterPostReq tagRegisterPostReq) {
+        log.info("tagRegister - Call");
+
+        if(tourService.tagRegisterByUser(tagRegisterPostReq) == SUCCESS) {
+            return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
+        }else return ResponseEntity.status(404).body(BaseResponseBody.of(403, "Tag doesn't exist"));
     }
 }

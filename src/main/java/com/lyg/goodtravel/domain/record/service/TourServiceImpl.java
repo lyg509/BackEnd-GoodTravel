@@ -2,13 +2,12 @@ package com.lyg.goodtravel.domain.record.service;
 
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
-import com.lyg.goodtravel.domain.record.db.entity.Tour;
-import com.lyg.goodtravel.domain.record.db.entity.TourID;
-import com.lyg.goodtravel.domain.record.db.entity.TourStamp;
-import com.lyg.goodtravel.domain.record.db.entity.TourStampID;
+import com.lyg.goodtravel.domain.record.db.entity.*;
+import com.lyg.goodtravel.domain.record.db.repository.RecordTagRepository;
 import com.lyg.goodtravel.domain.record.db.repository.TourRepository;
 import com.lyg.goodtravel.domain.record.db.repository.TourRepositorySpp;
 import com.lyg.goodtravel.domain.record.db.repository.TourStampRepository;
+import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
 import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,9 @@ public class TourServiceImpl implements TourService {
 
     @Autowired
     CourseDataRepository courseDataRepository;
+
+    @Autowired
+    RecordTagRepository recordTagRepository;
 
     @Autowired
     TourRepositorySpp tourRepositorySpp;
@@ -91,5 +93,24 @@ public class TourServiceImpl implements TourService {
     @Override
     public List<CourseData> touristNameVisitByUser(int userId, int courseId) {
         return null;
+    }
+
+    @Override
+    public int tagRegisterByUser(TagRegisterPostReq tagRegisterPostReq) {
+
+        RecordTag recordTag = new RecordTag();
+
+        // map<key, value> 사용해서 tag 받아오기
+        for (int item : tagRegisterPostReq.getTag().keySet()) {
+            recordTag.setRecordId(tagRegisterPostReq.getRecordId());
+            recordTag.setCourseId(tagRegisterPostReq.getCourseId());
+            recordTag.setSelect(true);
+
+            recordTag.setCode(item);
+            recordTag.setTagId(tagRegisterPostReq.getTag().get(item));
+
+            recordTagRepository.save(recordTag);
+        }
+        return SUCCESS;
     }
 }

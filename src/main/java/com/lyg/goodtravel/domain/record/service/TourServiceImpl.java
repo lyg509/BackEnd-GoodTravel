@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.record.service;
 
+import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
 import com.lyg.goodtravel.domain.record.db.entity.Tour;
 import com.lyg.goodtravel.domain.record.db.entity.TourID;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class TourServiceImpl implements TourService {
@@ -86,8 +88,8 @@ public class TourServiceImpl implements TourService {
         return FAIL;
     }
 
-   /* @Override
+    @Override
     public List<CourseData> touristNameVisitByUser(int userId, int courseId) {
-        return tourRepositorySpp.findVisitTouristName(userId, courseId);
-    }*/
+        return null;
+    }
 }

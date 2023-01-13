@@ -92,7 +92,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public List<CourseData> touristNameVisitByUser(int userId, int courseId) {
-        return null;
+        return tourRepositorySpp.findVisitTouristName(userId, courseId);
     }
 
     @Override

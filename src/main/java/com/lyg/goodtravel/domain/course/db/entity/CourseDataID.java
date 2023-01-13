@@ -10,5 +10,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseDataID implements Serializable {
-    private int courseId;
+    int courseId;
+    int courseDataId;
 }

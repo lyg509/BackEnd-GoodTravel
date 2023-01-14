@@ -3,6 +3,7 @@ package com.lyg.goodtravel.domain.tourtest.controller;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.tourtest.request.TourTestResultPostReq;
 import com.lyg.goodtravel.domain.tourtest.response.TourTestCourseGetRes;
+import com.lyg.goodtravel.domain.tourtest.response.TourTestResultGetRes;
 import com.lyg.goodtravel.domain.tourtest.service.TourTestService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
@@ -57,6 +58,21 @@ public class TourTestController {
             log.error("Course List doesn't exist");
             return ResponseEntity.status(403).body(
                     TourTestCourseGetRes.of(403, "Course List doesn't exist", null));
+        }
+    }
+
+    @ApiOperation(value = "여행 취향 테스트 결과 합계", notes = "여행 취향 테스트 결과 합계 정보를 반환합니다.")
+    @GetMapping("")
+    public ResponseEntity<TourTestResultGetRes> tourTestResult () {
+        log.info("tourTestResult - Call");
+
+        List<Integer> tourTestResultList = tourTestService.tourTestResult();
+
+        if(tourTestResultList != null && !tourTestResultList.isEmpty()) {
+            return ResponseEntity.status(200).body(TourTestResultGetRes.of(200, "Success", tourTestResultList));
+        }else {
+            log.error("Result doesn't exist");
+            return ResponseEntity.status(403).body(TourTestResultGetRes.of(403, "Result doesn't exist", null));
         }
     }
 }

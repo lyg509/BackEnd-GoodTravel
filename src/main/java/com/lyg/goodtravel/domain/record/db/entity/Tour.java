@@ -19,6 +19,7 @@ public class Tour {
 
     @ApiModelProperty(value = "코스 구분 번호", example = "1")
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private int courseId;
 
@@ -38,12 +39,10 @@ public class Tour {
     private LocalDateTime tourEnd;
 
     @ApiModelProperty(value = "코스 시작", example = "1")
-    @Id
     @Column(name = "is_start")
     private boolean isStart;
 
     @ApiModelProperty(value = "코스 종료", example = "1")
-    @Id
     @Column(name = "is_end")
     private boolean isEnd;
 }

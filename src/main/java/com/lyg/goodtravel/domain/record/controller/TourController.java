@@ -3,6 +3,7 @@ package com.lyg.goodtravel.domain.record.controller;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
+import com.lyg.goodtravel.domain.record.request.TourStartPostReq;
 import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
 import com.lyg.goodtravel.domain.record.response.TagListGetRes;
 import com.lyg.goodtravel.domain.record.response.TouristNameVisitGetRes;
@@ -10,6 +11,7 @@ import com.lyg.goodtravel.domain.record.service.TourService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +35,11 @@ public class TourController {
 
     @ApiOperation(value = "여행 시작")
     @PostMapping("/tour-start")
-    public ResponseEntity<? extends BaseResponseBody> courseStart(int userId, int courseId) {
+    public ResponseEntity<? extends BaseResponseBody> courseStart(
+            @RequestBody TourStartPostReq tourStartPostReq) {
         log.info("tourStartByUser - Call");
 
-        if (tourService.courseStartByUser(userId, courseId) == SUCCESS) {
+        if (tourService.courseStartByUser(tourStartPostReq) == SUCCESS) {
             return ResponseEntity
                     .status(201)
                     .body(BaseResponseBody.of(201, "Success"));
@@ -62,7 +65,8 @@ public class TourController {
 
     @ApiOperation(value = "코스에 대한 관광지 방문")
     @PutMapping("/tour-stamp")
-    public ResponseEntity<? extends BaseResponseBody> touristVisit(@RequestBody TouristVisitPostReq touristVisitPostReq) {
+    public ResponseEntity<? extends BaseResponseBody> touristVisit(
+            @RequestBody TouristVisitPostReq touristVisitPostReq) {
         log.info("tourEndByUser - Call");
 
         if (tourService.touristVisitByUser(touristVisitPostReq) == SUCCESS) {
@@ -74,8 +78,8 @@ public class TourController {
     @ApiOperation(value = "방문한 관광지 명 조회")
     @GetMapping("/tour-stamp/{userId}/{courseId}")
     public ResponseEntity<TouristNameVisitGetRes> touristNameVisit(
-            @PathVariable("userId") int userId,
-            @PathVariable("courseId") int courseId
+            @ApiParam(value = "회원 구분 번호") @PathVariable("userId") int userId,
+            @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId
     ) {
         log.info("touristVisit - Call");
 

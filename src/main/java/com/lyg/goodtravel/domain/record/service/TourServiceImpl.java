@@ -6,6 +6,7 @@ import com.lyg.goodtravel.domain.record.db.entity.*;
 import com.lyg.goodtravel.domain.record.db.repository.*;
 import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
+import com.lyg.goodtravel.domain.record.request.TourStartPostReq;
 import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,12 +39,12 @@ public class TourServiceImpl implements TourService {
     private static final int FAIL = -1;
 
     @Override
-    public int courseStartByUser(int userId, int courseId) {
+    public int courseStartByUser(TourStartPostReq tourStartPostReq) {
         // 코스 시작
         Tour tour = new Tour();
 
-        tour.setUserId(userId);
-        tour.setCourseId(courseId);
+        tour.setUserId(tourStartPostReq.getUserId());
+        tour.setCourseId(tourStartPostReq.getCourseId());
         tour.setTourStart(LocalDateTime.now());
         tour.setStart(true);
 
@@ -53,12 +54,12 @@ public class TourServiceImpl implements TourService {
         TourStamp tourStamp = new TourStamp();
 
         // 코스 번호 받아서 코스 안에 관광지 개수 카운트 -> 관광지 개수만큼 stamp에 넣기
-        int touristCount = courseDataRepository.courseDataCount(courseId);
+        int touristCount = courseDataRepository.courseDataCount(tourStartPostReq.getCourseId());
 
         for (int i = 1; i <= touristCount; i++) {
-            tourStamp.setCourseId(courseId);
+            tourStamp.setCourseId(tourStartPostReq.getCourseId());
             tourStamp.setCourseDataId(i);
-            tourStamp.setUserId(userId);
+            tourStamp.setUserId(tourStartPostReq.getUserId());
 
             tourStampRepository.save(tourStamp);
         }

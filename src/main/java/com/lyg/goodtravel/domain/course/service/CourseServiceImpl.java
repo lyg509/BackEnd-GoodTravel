@@ -92,4 +92,9 @@ public class CourseServiceImpl implements CourseService{
     public Page<Course> courseSearch(String courseName, Pageable pageable) {
         return courseRepositorySpp.findCourseSearch(courseName, pageable);
     }
+
+    @Override
+    public Page<Course> courseListByUser(int userId, Pageable pageable) {
+        return courseRepositorySpp.findCourseListByUser(userId, pageable);
+    }
 }

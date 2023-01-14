@@ -9,6 +9,8 @@ import com.lyg.goodtravel.domain.record.request.RecordRegisterPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RecordServiceImpl implements RecordService {
 
@@ -34,7 +36,7 @@ public class RecordServiceImpl implements RecordService {
         Record record = new Record();
 
         // 코스 시작 이력 여부 확인, 스탬프가 하나라도 찍혀 있을 때 작성 가능 하게 설정 --> 여행 레코드 작성 활성화
-        if(tourRepository.existsTourByUserIdAndCourseId(userId, courseId) && tourStampRepository.isStampByUserIdandCourseId(userId, courseId) > 0) {
+        if(tourRepository.existsTourByUserIdAndCourseId(userId, courseId) && tourStampRepository.isStampByUserIdAndCourseId(userId, courseId) > 0) {
             record.setCourseId(courseId);
             record.setUserId(userId);
             record.setRecordContent(contents);
@@ -57,5 +59,10 @@ public class RecordServiceImpl implements RecordService {
             return SUCCESS;
         }
         return FAIL;
+    }
+
+    @Override
+    public List<Record> recordWriteListByUser(int userId, int courseId) {
+        return recordRepository.findRecordByUserIdAndCourseId(userId, courseId);
     }
 }

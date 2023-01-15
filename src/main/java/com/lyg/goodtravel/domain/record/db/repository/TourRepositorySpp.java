@@ -18,8 +18,6 @@ public class TourRepositorySpp {
     QTourStamp qTourStamp = QTourStamp.tourStamp;
     QCourseData qCourseData = QCourseData.courseData;
 
-    QTagCode qTagCode = QTagCode.tagCode;
-    QTag qTag = QTag.tag;
 
     public List<CourseData> findVisitTouristName (int userId, int courseId) {
         return jpaQueryFactory.select(qCourseData).from(qCourseData)

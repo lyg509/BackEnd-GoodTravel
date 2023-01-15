@@ -109,7 +109,5 @@ public class CourseController {
             return ResponseEntity.status(403).body(
                     CourseListGetRes.of(403, "Course List doesn't exist", null));
         }
-
-
     }
 }

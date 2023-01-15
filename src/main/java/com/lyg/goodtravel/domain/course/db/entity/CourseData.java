@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.course.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Setter
 @IdClass(CourseDataID.class)
 @Table(name = "course_data")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @ApiModel(value = "CourseData", description = "코스에 등록된 관광지 정보")
 public class CourseData {
     @ApiModelProperty(value = "코스에 등록된 관광지 순차 번호", example = "1")
@@ -47,5 +49,9 @@ public class CourseData {
     @ManyToOne
     @JoinColumn(name = "course_id", updatable = false, insertable = false)
     private Course course;
+
+    @OneToOne
+    @JoinColumn(name = "tourist_id", updatable = false, insertable = false)
+    private Tourist tourist;
 
 }

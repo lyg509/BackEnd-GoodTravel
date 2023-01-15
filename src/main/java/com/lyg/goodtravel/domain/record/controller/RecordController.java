@@ -29,7 +29,7 @@ public class RecordController {
     private static final int SUCCESS = 1;
     private static final int FAIL = -1;
 
-    @ApiOperation(value = "여행 레코드(일기) 등록")
+    @ApiOperation(value = "여행 레코드(일기) 등록", notes = "코스 방문을 시작하면 여행 레코드(일기) 작성이 가능하다.")
     @PostMapping("")
     public ResponseEntity<? extends BaseResponseBody> recordRegister(
             RecordRegisterPostReq recordRegisterPostReq) {
@@ -51,7 +51,7 @@ public class RecordController {
 
         if (recordService.recordModifyByUser(recordRegisterPostReq) == SUCCESS) {
             return ResponseEntity.status(201).body(
-                    BaseResponseBody.of(201, "SUCCESS"));
+                    BaseResponseBody.of(201, "Success"));
         } else
             log.error("qnaQuestionModify - This questionId doesn't exist.");
             return ResponseEntity.status(404).body(
@@ -59,7 +59,7 @@ public class RecordController {
                 "no completed course.l"));
     }
 
-    @ApiOperation(value = "사용자가 작성한 여행 레코드(일기) 조회")
+    @ApiOperation(value = "사용자가 작성한 여행 레코드(일기) 조회", notes = "사용자가 코스 방문 시, 작성했던 여행 레코드(일기)는 마이페이지에서 조회가 가능하다.")
     @GetMapping("/{userId}/{courseId}")
     public ResponseEntity<RecordWriteListGetRes> recordWriteList (
             @ApiParam(value = "회원 구분 번호") @PathVariable("userId") int userId,

@@ -3,12 +3,12 @@ package com.lyg.goodtravel.domain.course.controller;
 import com.lyg.goodtravel.domain.course.db.bean.CourseDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseDetailUser;
 import com.lyg.goodtravel.domain.course.db.bean.TourTestResult;
-import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.response.CourseConnectionDetailGetRes;
 import com.lyg.goodtravel.domain.course.response.CourseDetailGetRes;
 import com.lyg.goodtravel.domain.course.response.CourseIsRegisterGetRes;
 import com.lyg.goodtravel.domain.course.service.CourseDetailService;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
+import com.lyg.goodtravel.domain.course.response.CourseDetailUserGetRes;
 import com.lyg.goodtravel.domain.record.response.CourseRecordDetailGetRes;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,23 +34,41 @@ public class CourseDetailController {
 
 
 
-    @ApiOperation(value = "코스 상세보기", notes = "코스에 대한 정보와 코스에 등록된 관광지에 대한 정보를 제공한다.")
-    @GetMapping("/{courseId}")
-    public ResponseEntity<CourseDetailGetRes> courseDetail(
+    @ApiOperation(value = "코스 상세보기 - 사용자 생성 코스", notes = "코스에 대한 정보와 코스에 등록된 관광지에 대한 정보를 제공한다.")
+    @GetMapping("/user/{courseId}")
+    public ResponseEntity<CourseDetailUserGetRes> courseDetailUser (
             @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
         log.info("courseDetail - Call");
 
-        if(courseDetailService.courseIsRegister(courseId)) {
-            List<CourseDetailUser> courseDetailUserList =
-                    courseDetailService.courseDataUserDetail(courseId);
-            return ResponseEntity.status(200).body(
-                    CourseDetailGetRes.of(200, "Success", courseDetailUserList, null));
+        List<CourseDetailUser> courseDetailUserList = courseDetailService.courseDataUserDetail(courseId);
+
+        if(courseDetailUserList != null && !courseDetailUserList.isEmpty()) {
+            return ResponseEntity.status(200).body(CourseDetailUserGetRes.of(200, "Success", courseDetailUserList));
         }else {
-            List<CourseDetail> courseDetailList = courseDetailService.courseDataDetail(courseId);
-            return ResponseEntity.status(200).body(
-                    CourseDetailGetRes.of(200, "Success", null, courseDetailList));
+            log.error("courseId doesn't exist");
+            return ResponseEntity.status(403).body(CourseDetailUserGetRes.of(403, "courseId doesn't exist", null));
         }
     }
+
+
+    @ApiOperation(value = "코스 상세보기 - 사용자 생성 코스 x", notes = "코스에 대한 정보와 코스에 등록된 관광지에 대한 정보를 제공한다.")
+    @GetMapping("/{courseId}")
+    public ResponseEntity<CourseDetailGetRes> courseDetail (
+            @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
+        log.info("courseDetail - Call");
+
+        List<CourseDetail> courseDetailList = courseDetailService.courseDataDetail(courseId);
+
+        if(courseDetailList != null && !courseDetailList.isEmpty()) {
+            return ResponseEntity.status(200)
+                    .body(CourseDetailGetRes.of(200, "Success", courseDetailList));
+        }else {
+            log.error("courseId doesn't exist");
+            return ResponseEntity.status(403)
+                    .body(CourseDetailGetRes.of(403, "courseId doesn't exist", null));
+        }
+    }
+
 
     @ApiOperation(value = "사용자 생성 여부")
     @GetMapping("/course-log/{courseId}")
@@ -60,8 +78,8 @@ public class CourseDetailController {
 
         boolean isRegister = courseDetailService.courseIsRegister(courseId);
 
-        return ResponseEntity.status(200).body(
-                CourseIsRegisterGetRes.of(200, "Success", isRegister));
+        return ResponseEntity.status(200)
+                .body(CourseIsRegisterGetRes.of(200, "Success", isRegister));
     }
 
 
@@ -74,12 +92,14 @@ public class CourseDetailController {
         List<Record> courseRecordDetailList = courseDetailService.courseRecordDetail(courseId);
 
         if (courseRecordDetailList != null && !courseRecordDetailList.isEmpty()) {
-            return ResponseEntity.status(200).body(
-                    CourseRecordDetailGetRes.of(200, "Success", courseRecordDetailList));
+            return ResponseEntity.status(200)
+                    .body(CourseRecordDetailGetRes
+                            .of(200, "Success", courseRecordDetailList));
         } else {
             log.error("courseId doesn't exist");
             return ResponseEntity.status(403).body(
-                    CourseRecordDetailGetRes.of(403, "courseId doesn't exist", null));
+                    CourseRecordDetailGetRes
+                            .of(403, "courseId doesn't exist", null));
         }
     }
 
@@ -94,13 +114,14 @@ public class CourseDetailController {
                 courseDetailService.courseTourTestResultDetail(courseId);
 
         if(courseTourTestResultList != null && !courseTourTestResultList.isEmpty()) {
-            return ResponseEntity.status(200).body(
-                    CourseConnectionDetailGetRes
+            return ResponseEntity.status(200)
+                    .body(CourseConnectionDetailGetRes
                             .of(200, "Success", courseTourTestResultList));
         }else {
             log.error("Test result doesn't exist");
-            return ResponseEntity.status(403).body(
-                    CourseConnectionDetailGetRes.of(403, "Test result doesn't exist", null));
+            return ResponseEntity.status(403)
+                    .body(CourseConnectionDetailGetRes
+                            .of(403, "Test result doesn't exist", null));
         }
     }
 }

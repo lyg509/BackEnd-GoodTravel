@@ -5,11 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CourseDetailUser {
+public class CourseDetail {
     private String courseName;
     private String courseContent;
-    private String touristName;
-    private String touristAddress;
-    private double touristLat;
-    private double touristLng;
+    private String courseDistance;
+    private String courseDays;
+    private int courseHits;
 }

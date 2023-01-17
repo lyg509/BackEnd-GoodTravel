@@ -1,7 +1,9 @@
 package com.lyg.goodtravel.domain.course.db.repository;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseTagDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseTourTestResultDetail;
+import com.lyg.goodtravel.domain.course.db.bean.CourseTouristDetail;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.entity.QCourse;
 import com.lyg.goodtravel.domain.course.db.entity.QCourseData;
@@ -38,13 +40,31 @@ public class CourseDetailRepositorySpp {
 
 
     // 코스 상세보기 Query
-    public List<CourseData> courseDataDetailByCourseId(int courseId) {
-        return jpaQueryFactory.select(qCourseData).from(qCourseData)
-                .leftJoin(qTourist).on(qTourist.touristId.eq(qCourseData.touristId))
-                .leftJoin(qCourse).on(qCourse.courseId.eq(qCourseData.courseId))
+    public List<CourseDetail> courseDetailByCourseId(int courseId) {
+        return jpaQueryFactory
+                .select(Projections
+                        .constructor(CourseDetail.class, qCourse.courseName, qCourse.courseContent,
+                        qCourse.courseDistance, qCourse.courseDays, qCourse.courseHits)).from(qCourse)
                 .where(qCourse.courseId.eq(courseId))
                 .fetch();
     }
+
+
+    // 코스-관광지상세보기 Query
+    public List<CourseTouristDetail> courseDataDetailByCourseId(int courseId) {
+        return jpaQueryFactory
+                .select(Projections
+                        .constructor(CourseTouristDetail.class,
+                                qTourist.touristName,
+                                qTourist.touristAddress,
+                                qTourist.touristLat,
+                                qTourist.touristLng))
+                .from(qCourseData)
+                .leftJoin(qTourist).on(qTourist.touristId.eq(qCourseData.touristId))
+                .where(qCourseData.courseId.eq(courseId))
+                .fetch();
+    }
+
 
     // 코스 여행 레코드(일기) 조회 Query
     public List<Record> courseRecordDetailByCourseId(int courseId) {
@@ -71,17 +91,15 @@ public class CourseDetailRepositorySpp {
                 .fetch();
     }
 
-
     // 코스 태그 Query
     public List<CourseTagDetail> courseTagDetailByCourseId(int courseId) {
         return jpaQueryFactory
-                .selectDistinct(Projections.constructor(CourseTagDetail.class, qTag.tagName))
+                .selectDistinct(Projections.constructor(CourseTagDetail.class,
+                        qTag.tagName))
                 .from(qRecordTag)
                 .innerJoin(qTagCode).on(qTagCode.code.eq(qRecordTag.code))
                 .innerJoin(qTag).on(qTag.tagId.eq(qRecordTag.tagId))
-                .where(qRecordTag.isSelect.eq(true)
-                        .and(qTag.code.eq(qTagCode.code)
-                        .and(qRecordTag.courseId.eq(courseId))))
+                .where(qRecordTag.isSelect.eq(true).and(qTag.code.eq(qTagCode.code).and(qRecordTag.courseId.eq(courseId))))
                 .fetch();
     }
 }

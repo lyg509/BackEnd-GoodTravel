@@ -53,12 +53,12 @@ public class CourseRepositorySpp {
         return new PageImpl<>(list.getResults(), pageable, list.getTotal());
     }
 
-    public Page<Tourist> findTouristSearchByUser(String keywords, Pageable pageable) {
+   /* public Page<Tourist> findTouristSearchByUser(String keywords, Pageable pageable) {
         QueryResults<Tourist> list = jpaQueryFactory.select(qTourist).from(qTourist)
                 .where(qTourist.touristName.contains(keywords).or(qTourist.touristAddress.contains(keywords)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()).fetchResults();
 
         return new PageImpl<>(list.getResults(), pageable, list.getTotal());
-    }
+    }*/
 }

@@ -55,7 +55,7 @@ public class TourServiceImpl implements TourService {
         TourStamp tourStamp = new TourStamp();
 
         // 코스 번호 받아서 코스 안에 관광지 개수 카운트 -> 관광지 개수만큼 stamp에 넣기
-        int touristCount = courseDataRepository.courseDataCount(tourStartPostReq.getCourseId());
+        int touristCount = courseDataRepository.countCourseDataByCourseId(tourStartPostReq.getCourseId());
 
         for (int i = 1; i <= touristCount; i++) {
             tourStamp.setCourseId(tourStartPostReq.getCourseId());
@@ -87,19 +87,21 @@ public class TourServiceImpl implements TourService {
         tourStampID.setCourseDataId(touristVisitPostReq.getCourseDataId());
 
         if(tourStampRepository.findById(tourStampID).isPresent()) {
-            return tourStampRepository.touristVisitByUser(touristVisitPostReq.getUserId(), touristVisitPostReq.getCourseId(), touristVisitPostReq.getCourseDataId());
+            return tourStampRepository
+                    .touristVisitByUser(
+                            touristVisitPostReq.getUserId(),
+                            touristVisitPostReq.getCourseId(),
+                            touristVisitPostReq.getCourseDataId());
         }
         return FAIL;
     }
 
     @Override
-    public List<VisitTouristName> touristNameVisitByUser(int userId, int courseId) {
-        return tourRepositorySpp.findVisitTouristName(userId, courseId);
-    }
+    public List<VisitTouristName> touristNameVisitByUser(
+            int userId, int courseId) {return tourRepositorySpp.findVisitTouristName(userId, courseId);}
 
     @Override
     public int tagRegisterByUser(TagRegisterPostReq tagRegisterPostReq) {
-
         RecordTag recordTag = new RecordTag();
 
         // map<key, value> 사용해서 tag 받아오기

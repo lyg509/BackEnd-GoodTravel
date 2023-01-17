@@ -1,11 +1,10 @@
 package com.lyg.goodtravel.domain.course.controller;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseTagDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseTourTestResultDetail;
-import com.lyg.goodtravel.domain.course.db.entity.CourseData;
-import com.lyg.goodtravel.domain.course.response.CourseDetailGetRes;
-import com.lyg.goodtravel.domain.course.response.CourseTagDetailGetRes;
-import com.lyg.goodtravel.domain.course.response.CourseTourTestResultDetailGetRes;
+import com.lyg.goodtravel.domain.course.db.bean.CourseTouristDetail;
+import com.lyg.goodtravel.domain.course.response.*;
 import com.lyg.goodtravel.domain.course.service.CourseDetailService;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
 import com.lyg.goodtravel.domain.record.response.CourseRecordDetailGetRes;
@@ -35,90 +34,75 @@ public class CourseDetailController {
 
     @ApiOperation(value = "코스 상세보기 - 사용자 생성 코스", notes = "코스에 대한 정보와 코스에 등록된 관광지에 대한 정보를 제공한다.")
     @GetMapping("/user/{courseId}")
-    public ResponseEntity<CourseDetailGetRes> courseDetailUser (
-            @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
+    public ResponseEntity<CourseDetailGetRes> courseDetailUser (@ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
         log.info("courseDetail - Call");
 
-        List<CourseData> courseDataDetailList = courseDetailService.courseDataDetail(courseId);
+        List<CourseDetail> courseDetailList = courseDetailService.courseDetail(courseId);
+        List<CourseTouristDetail> courseTouristDetailList = courseDetailService.courseDataDetail(courseId);
 
-        if(courseDataDetailList != null && !courseDataDetailList.isEmpty()) {
-            return ResponseEntity
-                            .status(200)
-                            .body(CourseDetailGetRes
-                            .of(200, "Success", courseDataDetailList));
+        if(courseDetailList != null && !courseDetailList.isEmpty() && courseTouristDetailList != null && !courseDetailList.isEmpty()) {
+            return ResponseEntity.status(200).body(CourseDetailGetRes.of(200, "Success", courseDetailList, courseTouristDetailList));
         }else {
             log.error("courseId doesn't exist");
-            return ResponseEntity
-                            .status(403)
-                            .body(CourseDetailGetRes
-                            .of(403, "courseId doesn't exist", null));
+            return ResponseEntity.status(403).body(CourseDetailGetRes.of(403, "courseId doesn't exist", null, null));
         }
     }
 
 
     @ApiOperation(value = "코스 여행 레코드(일기) 조회")
     @GetMapping("/course-record/{courseId}")
-    public ResponseEntity<CourseRecordDetailGetRes> courseRecordDetail(
-            @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
+    public ResponseEntity<CourseRecordDetailGetRes> courseRecordDetail(@ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
         log.info("courseRecordDetail - Call");
 
         List<Record> courseRecordDetailList = courseDetailService.courseRecordDetail(courseId);
 
         if (courseRecordDetailList != null && !courseRecordDetailList.isEmpty()) {
-            return ResponseEntity
-                            .status(200)
-                            .body(CourseRecordDetailGetRes
-                            .of(200, "Success", courseRecordDetailList));
+            return ResponseEntity.status(200).body(CourseRecordDetailGetRes.of(200, "Success", courseRecordDetailList));
         } else {
-            log.error("courseId doesn't exist");
-            return ResponseEntity
-                            .status(403)
-                            .body(CourseRecordDetailGetRes
-                            .of(403, "courseId doesn't exist", null));
+            return ResponseEntity.status(200).body(CourseRecordDetailGetRes.of(200, "Record doesn't exist", null));
         }
     }
 
 
     @ApiOperation(value = "코스 성향 분석")
     @GetMapping("/analysis/{courseId}")
-    public ResponseEntity<CourseTourTestResultDetailGetRes> courseConnectionDetail(
-            @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
-        log.info("courseConnectionDetail - Call");
+    public ResponseEntity<CourseTourTestResultDetailGetRes> courseTourTestDetail(@ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
+        log.info("courseTourTestDetail - Call");
 
-        List<CourseTourTestResultDetail> courseTourTestResultList =
-                courseDetailService.courseTourTestResultDetail(courseId);
+        List<CourseTourTestResultDetail> courseTourTestResultList = courseDetailService.courseTourTestResultDetail(courseId);
 
         if(courseTourTestResultList != null && !courseTourTestResultList.isEmpty()) {
-            return ResponseEntity
-                            .status(200)
-                            .body(CourseTourTestResultDetailGetRes
-                            .of(200, "Success", courseTourTestResultList));
+            return ResponseEntity.status(200).body(CourseTourTestResultDetailGetRes.of(200, "Success", courseTourTestResultList));
         }else {
-            log.error("Test result doesn't exist");
-            return ResponseEntity
-                            .status(403)
-                            .body(CourseTourTestResultDetailGetRes
-                            .of(403, "Test result doesn't exist", null));
+            return ResponseEntity.status(200).body(CourseTourTestResultDetailGetRes.of(200, "Test Result doesn't exist", null));
         }
     }
 
     @ApiOperation(value = "코스 태그")
     @GetMapping("/course-tag/{courseId}")
-    public ResponseEntity<CourseTagDetailGetRes> courseTagDetail(
-            @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
+    public ResponseEntity<CourseTagDetailGetRes> courseTagDetail(@ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
         log.info("courseTagDetail - Call");
 
         List<CourseTagDetail> courseTagDetailList = courseDetailService.courseTagDetail(courseId);
 
-        if(courseTagDetailList != null && !courseTagDetailList.isEmpty()) {
-            return ResponseEntity
-                    .status(200)
-                    .body(CourseTagDetailGetRes.of(200, "Success", courseTagDetailList));
+        if(courseTagDet ailList != null && !courseTagDetailList.isEmpty()) {
+            return ResponseEntity.status(200).body(CourseTagDetailGetRes.of(200, "Success", courseTagDetailList));
         }else {
-            log.error("Test result doesn't exist");
-            return ResponseEntity
-                    .status(403)
-                    .body(CourseTagDetailGetRes.of(403, "Test result doesn't exist", null));
+            return ResponseEntity.status(200).body(CourseTagDetailGetRes.of(200, "Tag doesn't exist", null));
+        }
+    }
+
+    @ApiOperation(value = "새로운 인연을 만날 확률(%)")
+    @GetMapping("/connection/{courseId}")
+    public ResponseEntity<CourseConnectionGetRes> courseConnectionDetail(@ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
+        log.info("courseConnectionDetail - Call");
+
+        double percentage = courseDetailService.courseConnection(courseId);
+
+        if(percentage != 0) {
+            return ResponseEntity.status(200).body(CourseConnectionGetRes.of(200, "Success", percentage));
+        }else {
+            return ResponseEntity.status(200).body(CourseConnectionGetRes.of(200, "Result doesn't exist", 0));
         }
     }
 }

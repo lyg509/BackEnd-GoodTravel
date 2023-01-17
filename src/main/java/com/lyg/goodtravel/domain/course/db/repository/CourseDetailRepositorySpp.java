@@ -1,13 +1,12 @@
 package com.lyg.goodtravel.domain.course.db.repository;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseTagDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseTourTestResultDetail;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.entity.QCourse;
 import com.lyg.goodtravel.domain.course.db.entity.QCourseData;
 import com.lyg.goodtravel.domain.course.db.entity.QTourist;
-import com.lyg.goodtravel.domain.record.db.entity.QRecord;
-import com.lyg.goodtravel.domain.record.db.entity.QTour;
-import com.lyg.goodtravel.domain.record.db.entity.Record;
+import com.lyg.goodtravel.domain.record.db.entity.*;
 import com.lyg.goodtravel.domain.tourtest.db.entity.QTourTest;
 import com.lyg.goodtravel.domain.user.db.entity.QUser;
 import com.querydsl.core.types.Projections;
@@ -28,10 +27,14 @@ public class CourseDetailRepositorySpp {
 
     QTour qTour = QTour.tour;
     QRecord qRecord = QRecord.record;
+    QRecordTag qRecordTag = QRecordTag.recordTag;
 
     QUser qUser = QUser.user;
 
     QTourTest qTourTest = QTourTest.tourTest;
+
+    QTagCode qTagCode = QTagCode.tagCode;
+    QTag qTag = QTag.tag;
 
 
     // 코스 상세보기 Query
@@ -65,6 +68,20 @@ public class CourseDetailRepositorySpp {
                 .leftJoin(qCourse).on(qCourse.courseId.eq(qTour.courseId))
                 .where(qTour.isStart.eq(true).and(qCourse.courseId.eq(courseId)))
                 .groupBy(qTourTest.tourTestId)
+                .fetch();
+    }
+
+
+    // 코스 태그 Query
+    public List<CourseTagDetail> courseTagDetailByCourseId(int courseId) {
+        return jpaQueryFactory
+                .selectDistinct(Projections.constructor(CourseTagDetail.class, qTag.tagName))
+                .from(qRecordTag)
+                .innerJoin(qTagCode).on(qTagCode.code.eq(qRecordTag.code))
+                .innerJoin(qTag).on(qTag.tagId.eq(qRecordTag.tagId))
+                .where(qRecordTag.isSelect.eq(true)
+                        .and(qTag.code.eq(qTagCode.code)
+                        .and(qRecordTag.courseId.eq(courseId))))
                 .fetch();
     }
 }

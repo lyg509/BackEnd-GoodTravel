@@ -5,8 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CourseDetail {
-    private String courseName;
-    private String courseContent;
-    private String courseDataName;
+public class CourseTagDetail {
+    private String tagName;
 }

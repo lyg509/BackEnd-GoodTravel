@@ -2,8 +2,7 @@ package com.lyg.goodtravel.domain.course.service;
 
 import com.lyg.goodtravel.domain.course.db.bean.CourseDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseDetailUser;
-import com.lyg.goodtravel.domain.course.db.bean.TourTestResult;
-import com.lyg.goodtravel.domain.course.db.entity.CourseData;
+import com.lyg.goodtravel.domain.course.db.bean.CourseTourTestResultDetail;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDetailRepositorySpp;
 import com.lyg.goodtravel.domain.course.db.repository.CourseRepository;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
@@ -38,5 +37,5 @@ public class CourseDetailServiceImpl implements CourseDetailService {
     public List<Record> courseRecordDetail(int courseId) { return courseDetailRepositorySpp.courseRecordDetailByCourseId(courseId); }
 
     @Override
-    public List<TourTestResult> courseTourTestResultDetail(int courseId) { return courseDetailRepositorySpp.courseTourTestResultDetailByCourseId(courseId); }
+    public List<CourseTourTestResultDetail> courseTourTestResultDetail(int courseId) { return courseDetailRepositorySpp.courseTourTestResultDetailByCourseId(courseId); }
 }

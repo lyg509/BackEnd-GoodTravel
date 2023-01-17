@@ -32,7 +32,8 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public int courseHits(CourseHitsPostReq courseHitsPostReq) {
         if(courseRepository.findById(courseHitsPostReq.getCourseId()).isPresent()) {
-            int courseId = courseRepository.findById(courseHitsPostReq.getCourseId()).get().getCourseId();
+            int courseId = courseRepository
+                    .findById(courseHitsPostReq.getCourseId()).get().getCourseId();
 
             courseRepository.courseHitsByCourseId(courseId);
 
@@ -58,29 +59,25 @@ public class CourseServiceImpl implements CourseService{
         CourseData courseData = new CourseData();
 
         int courseId = course.getCourseId();
-        int size = courseRegisterPostReq.getCourseDataName().size();
+        int size = courseRegisterPostReq.getTouristId().size();
 
-        // 관광지 명
-        Collection<String> courseNameList = courseRegisterPostReq.getCourseDataName().values();
-        String[] courseName = courseNameList.toArray(new String[0]);
-
-        // 관광지 주소
-        Collection<String> courseAddressList = courseRegisterPostReq.getCourseAddress().values();
-        String[] courseAddress = courseAddressList.toArray(new String[0]);
+        Collection<Integer> touristId = courseRegisterPostReq.getTouristId().values();
+        Integer[] courseNum = touristId.toArray(new Integer[0]);
 
         for (int i = 0; i < size; i++) {
             courseData.setCourseId(courseId);
             courseData.setCourseDataId(i + 1);
 
-            courseData.setCourseDataName(courseName[i]);
-            courseData.setCourseAddress(courseAddress[i]);
-            courseData.setCourseLng(courseRegisterPostReq.getCourseLng().get(i + 1));
-            courseData.setCourseLat(courseRegisterPostReq.getCourseLat().get(i + 1));
+            courseData.setTouristId(courseNum[i]);
 
             courseDataRepository.save(courseData);
         }
-
         return SUCCESS;
+    }
+
+    @Override
+    public Page<Course> courseListByUser(int userId, Pageable pageable) {
+        return courseRepositorySpp.findCourseListByUser(userId, pageable);
     }
 
     @Override
@@ -91,10 +88,5 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public Page<Course> courseSearch(String courseName, Pageable pageable) {
         return courseRepositorySpp.findCourseSearch(courseName, pageable);
-    }
-
-    @Override
-    public Page<Course> courseListByUser(int userId, Pageable pageable) {
-        return courseRepositorySpp.findCourseListByUser(userId, pageable);
     }
 }

@@ -2,6 +2,7 @@ package com.lyg.goodtravel.domain.user.controller;
 
 import com.lyg.goodtravel.domain.user.db.entity.User;
 import com.lyg.goodtravel.domain.user.request.UserLoginPostReq;
+import com.lyg.goodtravel.domain.user.response.UserFindEmail;
 import com.lyg.goodtravel.domain.user.response.UserLoginPostRes;
 import com.lyg.goodtravel.domain.user.request.UserModifyPutReq;
 import com.lyg.goodtravel.domain.user.request.UserRegisterPostReq;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Api("유저 API")
 @Slf4j
@@ -45,11 +43,20 @@ public class UserController {
         User user = userService.findByEmail(user_email);
         if(passwordEncoder.matches(user_password, user.getUserPassword())){
             //패스워드가 맞는 경우 , 로그인 성공
-            return ResponseEntity.ok(
-                    UserLoginPostRes.of(200, "Success", JwtTokenUtil.getToken(user_email)));
+            return ResponseEntity
+                    .ok(UserLoginPostRes
+                            .of(200,
+                                    "Success",
+                                    JwtTokenUtil.getToken(user_email),
+                                    user_email));
         }
-        return ResponseEntity.status(401).body(
-                UserLoginPostRes.of(401, "Invalid Password", null));
+        return ResponseEntity
+                .status(401)
+                .body(UserLoginPostRes
+                        .of(401,
+                                "Invalid Password",
+                                null,
+                                null));
     }
 
     @PostMapping("/signup")
@@ -61,15 +68,18 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> register(
-            @RequestBody @ApiParam(value="회원가입 정보", required = true) UserRegisterPostReq userRegisterInfo) {
-        //임의로 리턴된 User 인스턴스. 현재 코드는 회원 가입 성공 여부만 판단하기 때문에 굳이 Insert 된 유저 정보를 응답하지 않음.
+            @RequestBody
+            @ApiParam(value="회원가입 정보", required = true)
+                    UserRegisterPostReq userRegisterInfo) {
+        //임의로 리턴된 User 인스턴스. 현재 코드는 회원 가입 성공 여부만 판단하기 때문에
+        // 굳이 Insert 된 유저 정보를 응답하지 않음.
         User user = userService.createUser(userRegisterInfo);
-        return ResponseEntity.status(200).body(
-                BaseResponseBody.of(200, "Success"));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 
     @PutMapping("/user/modify")
-    @ApiOperation(value = "학생 회원 정보 수정", notes = "<strong>회원 Email를 기준</strong>으로 조회 후 다른 정보 수정!!")
+    @ApiOperation(value = "학생 회원 정보 수정", notes = "<strong>회원 Email를 " +
+            "기준</strong>으로 조회 후 다른 정보 수정!!")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "인증 실패"),
@@ -77,20 +87,35 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> modify(
-            @RequestBody @ApiParam(value="이름, 성향테스트 결과 변경", required = true) UserModifyPutReq userModifyPutReq) {
+            @RequestBody @ApiParam(value="이름, 성향테스트 결과 변경", required = true)
+                    UserModifyPutReq userModifyPutReq) {
 
-        User user1 = userService.findByEmail(
-                userModifyPutReq.getUserEmail());
-
-        boolean check = passwordEncoder.matches(
-                userModifyPutReq.getUserPassword(), user1.getUserPassword());
-
-        if(!check) return ResponseEntity.status(404).body(
-                BaseResponseBody.of(404,"False"));
+        User user1 = userService.findByEmail(userModifyPutReq.getUserEmail());
+        boolean check = passwordEncoder.matches(userModifyPutReq.getUserPassword(),
+                user1.getUserPassword());
+        if(!check) return ResponseEntity
+                            .status(404)
+                            .body(BaseResponseBody
+                            .of(404,"False"));
         else {
             User user = userService.updateUser(userModifyPutReq);
-            return ResponseEntity.status(200).body(
-                    BaseResponseBody.of(200, "Success"));
+            return ResponseEntity
+                            .status(200)
+                            .body(BaseResponseBody
+                            .of(200, "Success"));
         }
+    }
+
+    @GetMapping("/user/{userEmail}")
+    @ApiOperation(value = "회원 본인 정보 조회", notes = "로그인한 회원의 본인 정보를 응답한다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<UserFindEmail> findUserEmail(@RequestParam String userEmail) {
+        User user = userService.findByEmail((userEmail));
+        return ResponseEntity.status(200).body(UserFindEmail.of(user));
     }
 }

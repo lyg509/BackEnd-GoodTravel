@@ -1,6 +1,6 @@
 package com.lyg.goodtravel.domain.user.service;
 
-import com.lyg.goodtravel.domain.user.db.bean.VisitCourseName;
+import com.lyg.goodtravel.domain.user.db.bean.CourseNameVisitDetail;
 import com.lyg.goodtravel.domain.user.db.entity.User;
 import com.lyg.goodtravel.domain.user.db.repository.UserRepository;
 import com.lyg.goodtravel.domain.user.db.repository.UserRepositorySpp;
@@ -59,6 +59,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<VisitCourseName> visitCourseName(int userId){return  userRepositorySpp.findVisitTouristByUserId(userId);}
+    public List<CourseNameVisitDetail> courseNameVisitDetail(int userId){return  userRepositorySpp.courseVisitDetailByUserId(userId);}
 
 }

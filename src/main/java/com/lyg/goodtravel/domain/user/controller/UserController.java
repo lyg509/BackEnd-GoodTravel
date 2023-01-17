@@ -1,13 +1,12 @@
 package com.lyg.goodtravel.domain.user.controller;
 
-import com.lyg.goodtravel.domain.user.db.bean.VisitCourseName;
+import com.lyg.goodtravel.domain.user.db.bean.CourseNameVisitDetail;
 import com.lyg.goodtravel.domain.user.db.entity.User;
 import com.lyg.goodtravel.domain.user.request.UserLoginPostReq;
 import com.lyg.goodtravel.domain.user.response.UserFindEmail;
 import com.lyg.goodtravel.domain.user.response.UserLoginPostRes;
 import com.lyg.goodtravel.domain.user.request.UserModifyPutReq;
 import com.lyg.goodtravel.domain.user.request.UserRegisterPostReq;
-import com.lyg.goodtravel.domain.user.response.VisitCourseNameRes;
 import com.lyg.goodtravel.domain.user.service.UserService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import com.lyg.goodtravel.global.util.JwtTokenUtil;
@@ -130,23 +129,21 @@ public class UserController {
 
     @GetMapping("/user-location/{userId}")
     @ApiOperation(value = "회원 방문한 코스 조회")
-    public ResponseEntity<VisitCourseNameRes> visitCourseDetail(
+    public ResponseEntity<CourseNameVisitDetailRes> courseVisitDetail(
             @ApiParam(value = "회원 번호") @PathVariable("userId") int userId){
         log.info("visitCourseDetail - Call");
 
-        List<VisitCourseName> courseNameList = userService.visitCourseName(userId);
+        List<CourseNameVisitDetail> courseNameList = userService.courseNameVisitDetail(userId);
 
         if(courseNameList != null && !courseNameList.isEmpty()){
             return ResponseEntity
                     .status(200)
-                    .body((VisitCourseNameRes
-                            .of(200, "Success", courseNameList)));
+                    .body((CourseNameVisitDetailRes.of(200, "Success", courseNameList)));
         }else{
 
             return ResponseEntity
                     .status(200)
-                    .body((VisitCourseNameRes
-                            .of(200, "Course doesn't exist", null)));
+                    .body((CourseNameVisitDetailRes.of(200, "Course doesn't exist", null)));
         }
     }
 }

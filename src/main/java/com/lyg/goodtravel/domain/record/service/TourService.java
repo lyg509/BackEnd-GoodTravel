@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.record.service;
 
+import com.lyg.goodtravel.domain.course.db.bean.VisitTouristName;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
@@ -12,7 +13,7 @@ public interface TourService {
     int courseStartByUser(TourStartPostReq tourStartPostReq);
     int courseEndByUser(TourEndPostReq tourEndPostReq);
     int touristVisitByUser(TouristVisitPostReq touristVisitPostReq);
-    List<CourseData> touristNameVisitByUser(int userId, int courseId);
+    List<VisitTouristName> touristNameVisitByUser(int userId, int courseId);
     int tagRegisterByUser(TagRegisterPostReq tagRegisterPostReq);
     List<String> tagList();
 }

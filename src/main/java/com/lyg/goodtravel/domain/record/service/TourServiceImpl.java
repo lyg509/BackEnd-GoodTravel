@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.record.service;
 
+import com.lyg.goodtravel.domain.course.db.bean.VisitTouristName;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
 import com.lyg.goodtravel.domain.record.db.entity.*;
@@ -92,7 +93,7 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<CourseData> touristNameVisitByUser(int userId, int courseId) {
+    public List<VisitTouristName> touristNameVisitByUser(int userId, int courseId) {
         return tourRepositorySpp.findVisitTouristName(userId, courseId);
     }
 

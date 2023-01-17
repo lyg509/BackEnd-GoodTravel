@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.record.controller;
 
+import com.lyg.goodtravel.domain.course.db.bean.VisitTouristName;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
@@ -83,7 +84,7 @@ public class TourController {
     ) {
         log.info("touristVisit - Call");
 
-        List<CourseData> touristNameVisitList = tourService.touristNameVisitByUser(userId, courseId);
+        List<VisitTouristName> touristNameVisitList = tourService.touristNameVisitByUser(userId, courseId);
 
         if (touristNameVisitList != null && !touristNameVisitList.isEmpty()) {
             return ResponseEntity.status(200).body(TouristNameVisitGetRes

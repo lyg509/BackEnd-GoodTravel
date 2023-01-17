@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.record.response;
 
+import com.lyg.goodtravel.domain.course.db.bean.VisitTouristName;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import io.swagger.annotations.ApiModel;
@@ -14,9 +15,9 @@ import java.util.List;
 @ApiModel(value = "TouristNameVisitGetRes", description = "방문한 관광지 명 응답")
 public class TouristNameVisitGetRes extends BaseResponseBody {
     @ApiModelProperty(value = "방문한 관광지 명 정보")
-    List<CourseData> list = null;
+    List<VisitTouristName> list = null;
 
-    public static TouristNameVisitGetRes of (Integer statusCode, String message, List<CourseData> list) {
+    public static TouristNameVisitGetRes of (Integer statusCode, String message, List<VisitTouristName> list) {
         TouristNameVisitGetRes res = new TouristNameVisitGetRes();
         res.setStatusCode(statusCode);
         res.setMessage(message);
@@ -24,5 +25,4 @@ public class TouristNameVisitGetRes extends BaseResponseBody {
 
         return res;
     }
-
 }

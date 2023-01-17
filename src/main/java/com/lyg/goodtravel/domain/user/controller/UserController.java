@@ -1,11 +1,13 @@
 package com.lyg.goodtravel.domain.user.controller;
 
+import com.lyg.goodtravel.domain.user.db.bean.VisitCourseName;
 import com.lyg.goodtravel.domain.user.db.entity.User;
 import com.lyg.goodtravel.domain.user.request.UserLoginPostReq;
 import com.lyg.goodtravel.domain.user.response.UserFindEmail;
 import com.lyg.goodtravel.domain.user.response.UserLoginPostRes;
 import com.lyg.goodtravel.domain.user.request.UserModifyPutReq;
 import com.lyg.goodtravel.domain.user.request.UserRegisterPostReq;
+import com.lyg.goodtravel.domain.user.response.VisitCourseNameRes;
 import com.lyg.goodtravel.domain.user.service.UserService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import com.lyg.goodtravel.global.util.JwtTokenUtil;
@@ -16,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Api("유저 API")
 @Slf4j
@@ -74,7 +78,11 @@ public class UserController {
         //임의로 리턴된 User 인스턴스. 현재 코드는 회원 가입 성공 여부만 판단하기 때문에
         // 굳이 Insert 된 유저 정보를 응답하지 않음.
         User user = userService.createUser(userRegisterInfo);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        if(user!=null){
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        }else {
+            return ResponseEntity.status(400).body(BaseResponseBody.of(400, "error"));
+        }
     }
 
     @PutMapping("/user/modify")
@@ -117,5 +125,28 @@ public class UserController {
     public ResponseEntity<UserFindEmail> findUserEmail(@RequestParam String userEmail) {
         User user = userService.findByEmail((userEmail));
         return ResponseEntity.status(200).body(UserFindEmail.of(user));
+    }
+
+
+    @GetMapping("/user-location/{userId}")
+    @ApiOperation(value = "회원 방문한 코스 조회")
+    public ResponseEntity<VisitCourseNameRes> visitCourseDetail(
+            @ApiParam(value = "회원 번호") @PathVariable("userId") int userId){
+        log.info("visitCourseDetail - Call");
+
+        List<VisitCourseName> courseNameList = userService.visitCourseName(userId);
+
+        if(courseNameList != null && !courseNameList.isEmpty()){
+            return ResponseEntity
+                    .status(200)
+                    .body((VisitCourseNameRes
+                            .of(200, "Success", courseNameList)));
+        }else{
+
+            return ResponseEntity
+                    .status(200)
+                    .body((VisitCourseNameRes
+                            .of(200, "Course doesn't exist", null)));
+        }
     }
 }

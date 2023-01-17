@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TourTestResult {
+public class CourseTourTestResultDetail {
     private int tourTestId;
     private String tourTestName;
     private Long tourTestCount;

@@ -10,4 +10,6 @@ public class CourseTouristDetail {
     private String touristAddress;
     private double touristLat;
     private double touristLng;
+
+    private int fileId;
 }

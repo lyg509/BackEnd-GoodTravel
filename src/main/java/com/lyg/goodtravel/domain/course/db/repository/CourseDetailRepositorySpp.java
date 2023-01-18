@@ -4,10 +4,7 @@ import com.lyg.goodtravel.domain.course.db.bean.CourseDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseTagDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseTourTestResultDetail;
 import com.lyg.goodtravel.domain.course.db.bean.CourseTouristDetail;
-import com.lyg.goodtravel.domain.course.db.entity.CourseData;
-import com.lyg.goodtravel.domain.course.db.entity.QCourse;
-import com.lyg.goodtravel.domain.course.db.entity.QCourseData;
-import com.lyg.goodtravel.domain.course.db.entity.QTourist;
+import com.lyg.goodtravel.domain.course.db.entity.*;
 import com.lyg.goodtravel.domain.record.db.entity.*;
 import com.lyg.goodtravel.domain.tourtest.db.entity.QTourTest;
 import com.lyg.goodtravel.domain.user.db.entity.QUser;
@@ -26,6 +23,7 @@ public class CourseDetailRepositorySpp {
     QCourse qCourse = QCourse.course;
     QCourseData qCourseData = QCourseData.courseData;
     QTourist qTourist = QTourist.tourist;
+    QTouristImgPath qTouristImgPath = QTouristImgPath.touristImgPath;
 
     QTour qTour = QTour.tour;
     QRecord qRecord = QRecord.record;
@@ -42,33 +40,39 @@ public class CourseDetailRepositorySpp {
     // 코스 상세보기 Query
     public List<CourseDetail> courseDetailByCourseId(int courseId) {
         return jpaQueryFactory
-                .select(Projections
-                        .constructor(CourseDetail.class, qCourse.courseName, qCourse.courseContent,
-                        qCourse.courseDistance, qCourse.courseDays, qCourse.courseHits)).from(qCourse)
+                .select(Projections.constructor(CourseDetail.class,
+                        qCourse.courseName, qCourse.courseContent,
+                        qCourse.courseDistance, qCourse.courseDays,
+                        qCourse.courseHits)).from(qCourse)
                 .where(qCourse.courseId.eq(courseId))
                 .fetch();
     }
 
 
-    // 코스-관광지상세보기 Query
+    // 코스-관광지 상세보기 Query
     public List<CourseTouristDetail> courseDataDetailByCourseId(int courseId) {
         return jpaQueryFactory
-                .select(Projections
-                        .constructor(CourseTouristDetail.class,
-                                qTourist.touristName,
-                                qTourist.touristAddress,
-                                qTourist.touristLat,
-                                qTourist.touristLng))
+                .select(Projections.constructor(CourseTouristDetail.class,
+                        qTourist.touristId,
+                        qTourist.touristName,
+                        qTourist.touristAddress,
+                        qTourist.touristLat,
+                        qTourist.touristLng,
+                        qTouristImgPath.fileId.min().as("fileId")))
                 .from(qCourseData)
                 .leftJoin(qTourist).on(qTourist.touristId.eq(qCourseData.touristId))
+                .leftJoin(qTouristImgPath).on(qTouristImgPath.touristId.eq(qTourist.touristId))
                 .where(qCourseData.courseId.eq(courseId))
+                .groupBy(qTourist.touristId)
                 .fetch();
     }
 
 
     // 코스 여행 레코드(일기) 조회 Query
     public List<Record> courseRecordDetailByCourseId(int courseId) {
-        return jpaQueryFactory.select(qRecord).from(qRecord)
+        return jpaQueryFactory
+                .select(qRecord)
+                .from(qRecord)
                 .leftJoin(qUser).on(qUser.userId.eq(qRecord.userId))
                 .where(qRecord.courseId.eq(courseId))
                 .fetch();
@@ -93,8 +97,7 @@ public class CourseDetailRepositorySpp {
 
     // 코스 태그 Query
     public List<CourseTagDetail> courseTagDetailByCourseId(int courseId) {
-        return jpaQueryFactory
-                .selectDistinct(Projections.constructor(CourseTagDetail.class,
+        return jpaQueryFactory.selectDistinct(Projections.constructor(CourseTagDetail.class,
                         qTag.tagName))
                 .from(qRecordTag)
                 .innerJoin(qTagCode).on(qTagCode.code.eq(qRecordTag.code))

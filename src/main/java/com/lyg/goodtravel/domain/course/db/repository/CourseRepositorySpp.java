@@ -1,6 +1,7 @@
 package com.lyg.goodtravel.domain.course.db.repository;
 
 import com.lyg.goodtravel.domain.course.db.bean.BookmarkCourse;
+import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
 import com.lyg.goodtravel.domain.course.db.entity.*;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
@@ -24,8 +25,15 @@ public class CourseRepositorySpp {
     QBookmark qBookmark = QBookmark.bookmark;
 
 
+    // 북마크한 코스 조회
     public List<BookmarkCourse> findBookmarkCourse(int userId) {
-        return jpaQueryFactory.select(Projections.constructor(BookmarkCourse.class, qCourse.courseId, qCourse.courseName, qCourseData.touristId, qTouristImgPath.fileId.min().as("fileId"))).from(qCourse)
+        return jpaQueryFactory
+                .select(Projections.constructor(BookmarkCourse.class,
+                        qCourse.courseId,
+                        qCourse.courseName,
+                        qCourseData.touristId,
+                        qTouristImgPath.fileId.min().as("fileId")))
+                .from(qCourse)
                 .leftJoin(qCourseData).on(qCourseData.courseId.eq(qCourse.courseId))
                 .leftJoin(qBookmark).on(qBookmark.courseId.eq(qCourse.courseId))
                 .leftJoin(qTouristImgPath).on(qTouristImgPath.touristId.eq(qCourseData.touristId))
@@ -34,8 +42,20 @@ public class CourseRepositorySpp {
                 .fetch();
     }
 
-    public Page<Course> findPopularCourse (Pageable pageable) {
-        QueryResults<Course> list = jpaQueryFactory.select(qCourse).from(qCourse)
+    // 인기 있는 코스
+    public Page<PopularCourse> findPopularCourse (Pageable pageable) {
+        QueryResults<PopularCourse> list = jpaQueryFactory
+                .select(Projections.constructor(PopularCourse.class,
+                        qCourse.courseId,
+                        qCourse.courseName,
+                        qCourseData.touristId,
+                        qTouristImgPath.fileId.min().as("fileId")))
+                .from(qCourse)
+                .leftJoin(qCourseData).on(qCourseData.courseId.eq(qCourse.courseId))
+                .leftJoin(qTouristImgPath).on(qTouristImgPath.touristId.eq(qCourseData.touristId))
+                .leftJoin(qBookmark).on(qBookmark.courseId.eq(qCourse.courseId))
+                .where(qCourseData.courseDataId.eq(1))
+                .groupBy(qCourse.courseId)
                 .orderBy(qCourse.courseHits.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()).fetchResults();

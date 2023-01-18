@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.course.service;
 
+import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
@@ -59,16 +60,15 @@ public class CourseServiceImpl implements CourseService{
         CourseData courseData = new CourseData();
 
         int courseId = course.getCourseId();
-        int size = courseRegisterPostReq.getTouristId().size();
+        int size = courseRegisterPostReq.getTouristId().length;
 
-        Collection<Integer> touristId = courseRegisterPostReq.getTouristId().values();
-        Integer[] courseNum = touristId.toArray(new Integer[0]);
+        int[] touristId = courseRegisterPostReq.getTouristId();
 
         for (int i = 0; i < size; i++) {
             courseData.setCourseId(courseId);
             courseData.setCourseDataId(i + 1);
 
-            courseData.setTouristId(courseNum[i]);
+            courseData.setTouristId(touristId[i]);
 
             courseDataRepository.save(courseData);
         }
@@ -81,7 +81,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public Page<Course> popularCourse(Pageable pageable) {
+    public Page<PopularCourse> popularCourse(Pageable pageable) {
         return courseRepositorySpp.findPopularCourse(pageable);
     }
 

@@ -1,8 +1,11 @@
 package com.lyg.goodtravel.domain.user.controller;
 
+import com.lyg.goodtravel.domain.user.db.bean.AreaAnalysisDetail;
 import com.lyg.goodtravel.domain.user.db.bean.CourseNameVisitDetail;
 import com.lyg.goodtravel.domain.user.db.entity.User;
 import com.lyg.goodtravel.domain.user.request.UserLoginPostReq;
+import com.lyg.goodtravel.domain.user.response.AreaAnalysisRes;
+import com.lyg.goodtravel.domain.user.response.CourseNameVisitDetailRes;
 import com.lyg.goodtravel.domain.user.response.UserFindEmail;
 import com.lyg.goodtravel.domain.user.response.UserLoginPostRes;
 import com.lyg.goodtravel.domain.user.request.UserModifyPutReq;
@@ -144,6 +147,25 @@ public class UserController {
             return ResponseEntity
                     .status(200)
                     .body((CourseNameVisitDetailRes.of(200, "Course doesn't exist", null)));
+        }
+    }
+
+    @GetMapping("user-log/area/{userId}")
+    @ApiOperation(value = "회원 방문한 지역 분석")
+    public ResponseEntity<AreaAnalysisRes> areaAnalysisDetail(
+            @ApiParam(value = "회원 번호") @PathVariable("userId") int userId){
+        log.info("areaAnalysisDetail - Call");
+
+        List<AreaAnalysisDetail> areaAnalysisDetailList = userService.areaAnalysisDetail(userId);
+
+        if(areaAnalysisDetailList != null && !areaAnalysisDetailList.isEmpty()){
+            return ResponseEntity
+                    .status(200)
+                    .body((AreaAnalysisRes.of(200, "Success", areaAnalysisDetailList)));
+        }else{
+            return ResponseEntity
+                    .status(200)
+                    .body((AreaAnalysisRes.of(200, "Course doesn't exist", null)));
         }
     }
 }

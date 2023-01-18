@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.user.service;
 
+import com.lyg.goodtravel.domain.user.db.bean.AreaAnalysisDetail;
 import com.lyg.goodtravel.domain.user.db.bean.CourseNameVisitDetail;
 import com.lyg.goodtravel.domain.user.db.entity.User;
 import com.lyg.goodtravel.domain.user.db.repository.UserRepository;
@@ -61,4 +62,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<CourseNameVisitDetail> courseNameVisitDetail(int userId){return  userRepositorySpp.courseVisitDetailByUserId(userId);}
 
+    @Override
+    public List<AreaAnalysisDetail> areaAnalysisDetail(int userId){
+        return userRepositorySpp.areaAnalysisDetailByUserId(userId);
+    }
 }

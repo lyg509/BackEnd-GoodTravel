@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.course.controller;
 
+import com.lyg.goodtravel.domain.course.db.bean.BookmarkCourse;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.request.BookmarkRegisterPostReq;
 import com.lyg.goodtravel.domain.course.response.BookmarkCourseGetRes;
@@ -30,7 +31,8 @@ public class BookmarkController {
 
     @ApiOperation(value = "코스 북마크(좋아요) 추가", notes = "사용자는 코스를 북마크(좋아요) 한다.")
     @PostMapping("/bookmark")
-    public ResponseEntity<? extends BaseResponseBody> bookmarkRegister(@RequestBody BookmarkRegisterPostReq bookmarkRegisterPostReq) {
+    public ResponseEntity<? extends BaseResponseBody> bookmarkRegister(
+            @RequestBody BookmarkRegisterPostReq bookmarkRegisterPostReq) {
         log.info("bookmarkRegisterByUser - Call");
 
         bookmarkService.bookmarkRegisterByUser(bookmarkRegisterPostReq);
@@ -39,33 +41,46 @@ public class BookmarkController {
 
     @ApiOperation(value = "코스 북마크(좋아요) 해제", notes = "사용자는 코스 북마크를 언제든지 해제가 가능하다.")
     @DeleteMapping("/bookmark/{userId}/{courseId}")
-    public ResponseEntity<? extends BaseResponseBody> bookmarkRemove(@ApiParam(value = "회원 구분 번호") @PathVariable("userId") int userId,
-                                                                     @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
+    public ResponseEntity<? extends BaseResponseBody> bookmarkRemove(
+            @ApiParam(value = "회원 구분 번호") @PathVariable("userId") int userId,
+            @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
 
         log.info("bookmarkRemoveByUser - Call");
 
         if (bookmarkService.bookmarkRemoveByUser(userId, courseId) == SUCCESS) {
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+            return ResponseEntity
+                    .status(200)
+                    .body(BaseResponseBody.of(200, "Success"));
         } else {
             log.error("bookmarkRemoveByUser - bookmark doesn't exist");
-            return ResponseEntity.status(400).body(BaseResponseBody.of(400, "bookmark doesn't exist"));
+            return ResponseEntity
+                    .status(400)
+                    .body(BaseResponseBody.of(400, "bookmark doesn't exist"));
         }
 
     }
 
     @ApiOperation(value = "북마크한 코스 조회", notes = "사용자가 북마크한 코스를 조회한다.")
     @GetMapping("/bookmark-list/{userId}")
-    public ResponseEntity<BookmarkCourseGetRes> bookmarkList(@ApiParam(value = "회원 구분 번호") @PathVariable("userId") int userId) {
+    public ResponseEntity<BookmarkCourseGetRes> bookmarkList(
+            @ApiParam(value = "회원 구분 번호") @PathVariable("userId") int userId) {
 
         log.info("bookmarkList - Call");
 
-        List<Course> bookmarkCourseList = bookmarkService.bookmarkCourse(userId);
+        List<BookmarkCourse> bookmarkCourseList = bookmarkService.bookmarkCourse(userId);
+
 
         if (bookmarkCourseList != null && !bookmarkCourseList.isEmpty()) {
-            return ResponseEntity.status(200).body(BookmarkCourseGetRes.of(200, "Success", bookmarkCourseList));
+            return ResponseEntity
+                            .status(200)
+                            .body(BookmarkCourseGetRes
+                            .of(200, "Success", bookmarkCourseList));
         } else {
             log.error("bookmarkList - bookmark doesn't exist");
-            return ResponseEntity.status(400).body(BookmarkCourseGetRes.of(400, "bookmark doesn't exist", null));
+            return ResponseEntity
+                            .status(400)
+                            .body(BookmarkCourseGetRes
+                            .of(400, "bookmark doesn't exist", null));
         }
     }
 }

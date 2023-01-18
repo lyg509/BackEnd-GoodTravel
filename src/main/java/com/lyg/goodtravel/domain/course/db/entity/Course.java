@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -46,4 +47,9 @@ public class Course {
     @ApiModelProperty(value = "코스 사용자 등록 여부 ", required = true, example = "3")
     @Column(name = "is_register")
     private boolean isRegister;
+
+    @OneToMany
+    @JoinColumn(name = "course_id", updatable = false, insertable = false)
+    private List<CourseData> courseData;
+
 }

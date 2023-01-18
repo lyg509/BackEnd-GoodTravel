@@ -1,7 +1,9 @@
 package com.lyg.goodtravel.domain.course.db.repository;
 
+import com.lyg.goodtravel.domain.course.db.bean.BookmarkCourse;
 import com.lyg.goodtravel.domain.course.db.entity.*;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,14 +17,20 @@ import java.util.List;
 public class CourseRepositorySpp {
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
-    QCourse qCourse = QCourse.course;
-    QBookmark qBookmark = QBookmark.bookmark;
-    QTourist qTourist = QTourist.tourist;
 
-    public List<Course> findBookmarkCourse (int userId) {
-        return jpaQueryFactory.select(qCourse).from(qCourse)
+    QCourse qCourse = QCourse.course;
+    QCourseData qCourseData = QCourseData.courseData;
+    QTouristImgPath qTouristImgPath = QTouristImgPath.touristImgPath;
+    QBookmark qBookmark = QBookmark.bookmark;
+
+
+    public List<BookmarkCourse> findBookmarkCourse(int userId) {
+        return jpaQueryFactory.select(Projections.constructor(BookmarkCourse.class, qCourse.courseId, qCourse.courseName, qCourseData.touristId, qTouristImgPath.fileId.min().as("fileId"))).from(qCourse)
+                .leftJoin(qCourseData).on(qCourseData.courseId.eq(qCourse.courseId))
                 .leftJoin(qBookmark).on(qBookmark.courseId.eq(qCourse.courseId))
-                .where(qBookmark.userId.eq(userId))
+                .leftJoin(qTouristImgPath).on(qTouristImgPath.touristId.eq(qCourseData.touristId))
+                .where(qCourseData.courseDataId.eq(1).and(qBookmark.userId.eq(userId)))
+                .groupBy(qCourse.courseId)
                 .fetch();
     }
 
@@ -52,13 +60,4 @@ public class CourseRepositorySpp {
 
         return new PageImpl<>(list.getResults(), pageable, list.getTotal());
     }
-
-   /* public Page<Tourist> findTouristSearchByUser(String keywords, Pageable pageable) {
-        QueryResults<Tourist> list = jpaQueryFactory.select(qTourist).from(qTourist)
-                .where(qTourist.touristName.contains(keywords).or(qTourist.touristAddress.contains(keywords)))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize()).fetchResults();
-
-        return new PageImpl<>(list.getResults(), pageable, list.getTotal());
-    }*/
 }

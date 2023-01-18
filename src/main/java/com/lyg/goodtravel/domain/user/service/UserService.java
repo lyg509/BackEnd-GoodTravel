@@ -2,6 +2,7 @@ package com.lyg.goodtravel.domain.user.service;
 
 import com.lyg.goodtravel.domain.user.db.bean.AreaAnalysisDetail;
 import com.lyg.goodtravel.domain.user.db.bean.CourseNameVisitDetail;
+import com.lyg.goodtravel.domain.user.db.bean.DateAnalysisDetail;
 import com.lyg.goodtravel.domain.user.db.entity.User;
 import com.lyg.goodtravel.domain.user.request.UserModifyPutReq;
 import com.lyg.goodtravel.domain.user.request.UserRegisterPostReq;
@@ -17,4 +18,5 @@ public interface UserService {
     User updateUser(UserModifyPutReq userModifyPutReq);
     List<CourseNameVisitDetail> courseNameVisitDetail(int userId);
     List<AreaAnalysisDetail> areaAnalysisDetail(int userId);
+    List<DateAnalysisDetail> dateAnalysisDetail(int userId);
 }

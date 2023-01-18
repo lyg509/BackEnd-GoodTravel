@@ -6,6 +6,7 @@ import com.lyg.goodtravel.domain.course.db.entity.QTourist;
 import com.lyg.goodtravel.domain.record.db.entity.QTour;
 import com.lyg.goodtravel.domain.record.db.entity.QTourStamp;
 import com.lyg.goodtravel.domain.user.db.bean.CourseNameVisitDetail;
+import com.lyg.goodtravel.domain.user.db.bean.DateAnalysisDetail;
 import com.lyg.goodtravel.domain.user.db.entity.QUser;
 import com.lyg.goodtravel.domain.user.db.entity.User;
 import com.querydsl.core.types.Projections;
@@ -53,5 +54,14 @@ public class UserRepositorySpp {
                 .where(qTourStamp.isStamp.eq(true).and(qTourStamp.userId.eq(userId)))
                 .groupBy(qTourist.touristAddress.substring(0, 3))
                 .fetch();
+    }
+
+    //사용자 분석 월별
+    public List<DateAnalysisDetail> dateAnalysisDetailByUserId(int userId){
+        return jpaQueryFactory
+                .select(Projections.constructor(DateAnalysisDetail.class,
+                        qTour.tourEnd.yearMonth().as("dateName"),
+                        qTour.tourEnd.yearMonth().count().as("dateCount")))
+                .from(qTour).where(qTour.userId.eq(userId)).groupBy(qTour.tourEnd.yearMonth()).fetch();
     }
 }

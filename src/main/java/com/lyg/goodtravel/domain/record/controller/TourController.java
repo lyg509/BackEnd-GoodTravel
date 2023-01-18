@@ -2,6 +2,7 @@ package com.lyg.goodtravel.domain.record.controller;
 
 import com.lyg.goodtravel.domain.course.db.bean.VisitTouristName;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
+import com.lyg.goodtravel.domain.record.db.entity.TagCode;
 import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
 import com.lyg.goodtravel.domain.record.request.TourStartPostReq;
@@ -46,8 +47,9 @@ public class TourController {
                     .body(BaseResponseBody.of(201, "Success"));
         } else
             return ResponseEntity.
-                    status(404).
-                    body(BaseResponseBody.of(403, "userId or courseId doesn't exist"));
+                    status(404)
+                    .body(BaseResponseBody
+                            .of(403, "userId or courseId doesn't exist"));
     }
 
     @ApiOperation(value = "여행 종료")
@@ -60,8 +62,10 @@ public class TourController {
             return ResponseEntity.status(201).body(
                     BaseResponseBody.of(201, "Success"));
         } else
-            return ResponseEntity.status(404).body(
-                    BaseResponseBody.of(403, "userId or courseId doesn't exist"));
+            return ResponseEntity
+                    .status(404)
+                    .body(BaseResponseBody
+                            .of(403, "userId or courseId doesn't exist"));
     }
 
     @ApiOperation(value = "코스에 대한 관광지 방문", notes = "코스에 등록 된 관광지를 방문하면 방문 등록(스탬프) 된다.")
@@ -71,9 +75,14 @@ public class TourController {
         log.info("tourEndByUser - Call");
 
         if (tourService.touristVisitByUser(touristVisitPostReq) == SUCCESS) {
-            return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
+            return ResponseEntity
+                    .status(201)
+                    .body(BaseResponseBody.of(201, "Success"));
         } else
-            return ResponseEntity.status(404).body(BaseResponseBody.of(403, "There is no travel course in progress."));
+            return ResponseEntity
+                    .status(404)
+                    .body(BaseResponseBody
+                            .of(403, "There is no travel course in progress."));
     }
 
     @ApiOperation(value = "방문한 관광지 명 조회", notes = "사용자는 코스에 대한 방문한 관광지 조회가 가능하다.")
@@ -87,29 +96,38 @@ public class TourController {
         List<VisitTouristName> touristNameVisitList = tourService.touristNameVisitByUser(userId, courseId);
 
         if (touristNameVisitList != null && !touristNameVisitList.isEmpty()) {
-            return ResponseEntity.status(200).body(TouristNameVisitGetRes
+            return ResponseEntity
+                    .status(200)
+                    .body(TouristNameVisitGetRes
                     .of(200, "Success", touristNameVisitList));
         } else {
             log.error("touristNameVisit - stamp doesn't exist");
-            return ResponseEntity.status(400).body(TouristNameVisitGetRes
+            return ResponseEntity
+                    .status(400).body(TouristNameVisitGetRes
                     .of(400, "stamp doesn't exist", null));
         }
     }
+
 
     @ApiOperation(value = "여행 코스 태그 목록", notes = "여행 레코드(일기) 작성 시, 여행에 맞는 태그를 선택한다.")
     @GetMapping("/tour-tag")
     public ResponseEntity<TagListGetRes> tagList () {
         log.info("tagList - Call");
 
-        List<String> tagList = tourService.tagList();
+        List<TagCode> tagList = tourService.tagList();
 
         if (tagList != null && !tagList.isEmpty()) {
-            return ResponseEntity.status(200).body(TagListGetRes.of(200, "Success", tagList));
+            return ResponseEntity
+                    .status(200)
+                    .body(TagListGetRes.of(200, "Success", tagList));
         } else {
             log.error("tagList - tag doesn't exist");
-            return ResponseEntity.status(400).body(TagListGetRes.of(400, "stamp doesn't exist", null));
+            return ResponseEntity
+                    .status(400)
+                    .body(TagListGetRes.of(400, "tagList doesn't exist", null));
         }
     }
+
 
 
     @ApiOperation(value = "여행 코스 태그 등록")
@@ -118,10 +136,14 @@ public class TourController {
         log.info("tagRegister - Call");
 
         if(tourService.tagRegisterByUser(tagRegisterPostReq) == SUCCESS) {
-            return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
+            return ResponseEntity
+                    .status(201)
+                    .body(BaseResponseBody.of(201, "Success"));
         }else {
             log.error("Tag doesn't exist");
-            return ResponseEntity.status(404).body(BaseResponseBody.of(403, "Tag doesn't exist"));
+            return ResponseEntity
+                    .status(404)
+                    .body(BaseResponseBody.of(403, "Tag doesn't exist"));
         }
     }
 }

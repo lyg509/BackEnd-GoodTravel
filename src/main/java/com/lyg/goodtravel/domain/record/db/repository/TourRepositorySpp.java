@@ -1,16 +1,12 @@
 package com.lyg.goodtravel.domain.record.db.repository;
 
 import com.lyg.goodtravel.domain.course.db.bean.VisitTouristName;
-import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.entity.QCourseData;
 import com.lyg.goodtravel.domain.course.db.entity.QTourist;
-import com.lyg.goodtravel.domain.record.db.entity.QTag;
-import com.lyg.goodtravel.domain.record.db.entity.QTagCode;
 import com.lyg.goodtravel.domain.record.db.entity.QTourStamp;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

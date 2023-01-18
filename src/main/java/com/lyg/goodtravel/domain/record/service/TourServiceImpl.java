@@ -1,7 +1,6 @@
 package com.lyg.goodtravel.domain.record.service;
 
 import com.lyg.goodtravel.domain.course.db.bean.VisitTouristName;
-import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
 import com.lyg.goodtravel.domain.record.db.entity.*;
 import com.lyg.goodtravel.domain.record.db.repository.*;
@@ -32,6 +31,9 @@ public class TourServiceImpl implements TourService {
 
     @Autowired
     TagRepository tagRepository;
+
+    @Autowired
+    TagCodeRepository tagCodeRepository;
 
     @Autowired
     TourRepositorySpp tourRepositorySpp;
@@ -74,7 +76,7 @@ public class TourServiceImpl implements TourService {
         tourID.setUserId(tourEndPostReq.getUserId());
         tourID.setCourseId(tourEndPostReq.getCourseId());
 
-        if(tourRepository.findById(tourID).isPresent()) {
+        if (tourRepository.findById(tourID).isPresent()) {
             return tourRepository.tourEndByUser(tourEndPostReq.getUserId(), tourEndPostReq.getCourseId());
         } else return FAIL;
     }
@@ -86,7 +88,7 @@ public class TourServiceImpl implements TourService {
         tourStampID.setCourseId(touristVisitPostReq.getCourseId());
         tourStampID.setCourseDataId(touristVisitPostReq.getCourseDataId());
 
-        if(tourStampRepository.findById(tourStampID).isPresent()) {
+        if (tourStampRepository.findById(tourStampID).isPresent()) {
             return tourStampRepository
                     .touristVisitByUser(
                             touristVisitPostReq.getUserId(),
@@ -98,20 +100,24 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public List<VisitTouristName> touristNameVisitByUser(
-            int userId, int courseId) {return tourRepositorySpp.findVisitTouristName(userId, courseId);}
+            int userId, int courseId) {
+        return tourRepositorySpp.findVisitTouristName(userId, courseId);
+    }
 
     @Override
     public int tagRegisterByUser(TagRegisterPostReq tagRegisterPostReq) {
         RecordTag recordTag = new RecordTag();
 
-        // map<key, value> 사용해서 tag 받아오기
-        for (int item : tagRegisterPostReq.getTag().keySet()) {
+        int size = tagRegisterPostReq.getTag().length;
+        int[] tagId = tagRegisterPostReq.getTag();
+
+        for (int i = 0; i < size; i++) {
             recordTag.setRecordId(tagRegisterPostReq.getRecordId());
             recordTag.setCourseId(tagRegisterPostReq.getCourseId());
-            recordTag.setSelect(true);
 
-            recordTag.setCode(item);
-            recordTag.setTagId(tagRegisterPostReq.getTag().get(item));
+            recordTag.setSelect(true);
+            recordTag.setCode(i + 1);
+            recordTag.setTagId(tagId[i]);
 
             recordTagRepository.save(recordTag);
         }
@@ -119,7 +125,5 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<String> tagList() {
-        return tagRepository.findTagList();
-    }
+    public List<TagCode> tagList() {return tagCodeRepository.findTagList();}
 }

@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.course.controller;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseInfo;
 import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
 import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
@@ -76,7 +77,7 @@ public class CourseController {
     public ResponseEntity<PopularCourseGetRes> popularCourse (int page, int size) {
         log.info("popularCourse - Call");
 
-        Page<PopularCourse> popularCouseList = courseService.popularCourse(PageRequest.of(page - 1 , size));
+        Page<CourseInfo> popularCouseList = courseService.popularCourse(PageRequest.of(page - 1 , size));
 
         return ResponseEntity
                 .status(200)
@@ -89,7 +90,7 @@ public class CourseController {
             @ApiParam(value = "코스 명") @PathVariable("courseName") String courseName, int page, int size) {
         log.info("courseSearch - Call");
 
-        Page<CourseSearch> courseSearchList = courseService.courseSearch(courseName, PageRequest.of(page - 1, size));
+        Page<CourseInfo> courseSearchList = courseService.courseSearch(courseName, PageRequest.of(page - 1, size));
 
         return ResponseEntity
                 .status(200)
@@ -102,7 +103,7 @@ public class CourseController {
             @ApiParam(value = "회원 구분 번호") @PathVariable("userId") int userId, int page, int size) {
         log.info("courseListByUser - Call");
 
-        Page<Course> courseList = courseService.courseListByUser(userId, PageRequest.of(page - 1 , size));
+        Page<CourseInfo> courseList = courseService.courseListByUser(userId, PageRequest.of(page - 1 , size));
 
         if(courseList != null && !courseList.isEmpty()) {
             return ResponseEntity

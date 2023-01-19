@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.course.response;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseInfo;
 import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
@@ -14,12 +15,12 @@ import org.springframework.data.domain.Page;
 @ApiModel(value = "CourseSearchGetRes", description = "코스 검색 응답")
 public class CourseSearchGetRes extends BaseResponseBody {
     @ApiModelProperty(value = "코스 정보")
-    Page<CourseSearch> list = null;
+    Page<CourseInfo> list = null;
 
     public static CourseSearchGetRes of (
             Integer statusCode,
             String message,
-            Page<CourseSearch> list) {
+            Page<CourseInfo> list) {
 
         CourseSearchGetRes res = new CourseSearchGetRes();
         res.setStatusCode(statusCode);
@@ -28,5 +29,4 @@ public class CourseSearchGetRes extends BaseResponseBody {
 
         return res;
     }
-
 }

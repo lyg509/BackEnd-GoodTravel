@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.tourtest.controller;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseInfo;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.tourtest.db.bean.TourTestCourse;
 import com.lyg.goodtravel.domain.tourtest.request.TourTestResultPostReq;
@@ -59,7 +60,7 @@ public class TourTestController {
             @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
         log.info("tourTestCourseResultByUser - Call");
 
-        List<TourTestCourse> tourTestCourseList =  tourTestService.tourTestCourseByUser(courseId);
+        List<CourseInfo> tourTestCourseList =  tourTestService.tourTestCourseByUser(courseId);
 
         if(tourTestCourseList != null && !tourTestCourseList.isEmpty()) {
             return ResponseEntity.status(201).body(

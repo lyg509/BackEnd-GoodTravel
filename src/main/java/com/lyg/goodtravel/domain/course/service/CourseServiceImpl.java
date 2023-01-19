@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.course.service;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseInfo;
 import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
 import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
@@ -76,15 +77,9 @@ public class CourseServiceImpl implements CourseService {
         return SUCCESS;
     }
 
-    @Override
-    public Page<Course> courseListByUser(int userId, Pageable pageable) {
-        return courseRepositorySpp.findCourseListByUser(userId, pageable);
-    }
+    public Page<CourseInfo> courseListByUser(int userId, Pageable pageable) { return courseRepositorySpp.findCourseListByUser(userId, pageable); }
 
-    @Override
-    public Page<PopularCourse> popularCourse(Pageable pageable) {
-        return courseRepositorySpp.findPopularCourse(pageable);
-    }
+    public Page<CourseInfo> popularCourse(Pageable pageable) {return courseRepositorySpp.findPopularCourse(pageable);}
 
-    public Page<CourseSearch> courseSearch(String courseName, Pageable pageable) { return courseRepositorySpp.findCourseSearch(courseName, pageable); }
+    public Page<CourseInfo> courseSearch(String courseName, Pageable pageable) { return courseRepositorySpp.findCourseSearch(courseName, pageable); }
 }

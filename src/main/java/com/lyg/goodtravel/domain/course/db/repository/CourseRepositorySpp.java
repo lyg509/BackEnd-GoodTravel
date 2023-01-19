@@ -1,6 +1,7 @@
 package com.lyg.goodtravel.domain.course.db.repository;
 
 import com.lyg.goodtravel.domain.course.db.bean.BookmarkCourse;
+import com.lyg.goodtravel.domain.course.db.bean.CourseInfo;
 import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
 import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
 import com.lyg.goodtravel.domain.course.db.entity.*;
@@ -44,9 +45,8 @@ public class CourseRepositorySpp {
     }
 
     // 인기 있는 코스
-    public Page<PopularCourse> findPopularCourse (Pageable pageable) {
-        QueryResults<PopularCourse> list = jpaQueryFactory
-                .select(Projections.constructor(PopularCourse.class,
+    public Page<CourseInfo> findPopularCourse (Pageable pageable) {
+        QueryResults<CourseInfo> list = jpaQueryFactory.select(Projections.constructor(CourseInfo.class,
                         qCourse.courseId,
                         qCourse.courseName,
                         qCourseData.touristId,
@@ -65,10 +65,14 @@ public class CourseRepositorySpp {
     }
 
     // 코스 검색
-    // 코스 검색
-    public Page<CourseSearch> findCourseSearch (String courseName, Pageable pageable) {
-        QueryResults<CourseSearch> list = jpaQueryFactory.select(Projections.constructor(CourseSearch.class, qCourse.courseId, qCourse.courseName,
-                        qCourseData.touristId, qTouristImgPath.fileId.min().as("fileId"))).from(qCourse)
+    public Page<CourseInfo> findCourseSearch (String courseName, Pageable pageable) {
+        QueryResults<CourseInfo> list = jpaQueryFactory
+                .select(Projections.constructor(CourseInfo.class,
+                        qCourse.courseId,
+                        qCourse.courseName,
+                        qCourseData.touristId,
+                        qTouristImgPath.fileId.min().as("fileId")))
+                .from(qCourse)
                 .leftJoin(qCourseData).on(qCourseData.courseId.eq(qCourse.courseId))
                 .leftJoin(qTouristImgPath).on(qTouristImgPath.touristId.eq(qCourseData.touristId))
                 .where(qCourse.courseName.contains(courseName).and(qCourseData.courseDataId.eq(1)))
@@ -79,9 +83,19 @@ public class CourseRepositorySpp {
         return new PageImpl<>(list.getResults(), pageable, list.getTotal());
     }
 
-    public Page<Course> findCourseListByUser (int userId, Pageable pageable) {
-        QueryResults<Course> list = jpaQueryFactory.select(qCourse).from(qCourse)
-                .where(qCourse.userId.eq(userId).and(qCourse.isRegister.eq(true)))
+    // 사용자 생성 코스 조회
+    public Page<CourseInfo> findCourseListByUser (int userId, Pageable pageable) {
+        QueryResults<CourseInfo> list = jpaQueryFactory
+                .select(Projections.constructor(CourseInfo.class,
+                        qCourse.courseId,
+                        qCourse.courseName,
+                        qCourseData.touristId,
+                        qTouristImgPath.fileId.min().as("fileId")))
+                .from(qCourse)
+                .leftJoin(qCourseData).on(qCourseData.courseId.eq(qCourse.courseId))
+                .leftJoin(qTouristImgPath).on(qTouristImgPath.touristId.eq(qCourseData.touristId))
+                .where(qCourse.userId.eq(userId).and(qCourse.isRegister.eq(true)).and(qCourseData.courseDataId.eq(1)))
+                .groupBy(qCourse.courseId)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()).fetchResults();
 

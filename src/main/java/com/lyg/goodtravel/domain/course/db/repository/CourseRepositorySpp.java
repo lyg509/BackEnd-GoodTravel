@@ -1,6 +1,7 @@
 package com.lyg.goodtravel.domain.course.db.repository;
 
 import com.lyg.goodtravel.domain.course.db.bean.BookmarkCourse;
+import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
 import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
 import com.lyg.goodtravel.domain.course.db.entity.*;
 import com.querydsl.core.QueryResults;
@@ -63,9 +64,15 @@ public class CourseRepositorySpp {
         return new PageImpl<>(list.getResults(), pageable, list.getTotal());
     }
 
-    public Page<Course> findCourseSearch (String courseName, Pageable pageable) {
-        QueryResults<Course> list = jpaQueryFactory.select(qCourse).from(qCourse)
-                .where(qCourse.courseName.contains(courseName))
+    // 코스 검색
+    // 코스 검색
+    public Page<CourseSearch> findCourseSearch (String courseName, Pageable pageable) {
+        QueryResults<CourseSearch> list = jpaQueryFactory.select(Projections.constructor(CourseSearch.class, qCourse.courseId, qCourse.courseName,
+                        qCourseData.touristId, qTouristImgPath.fileId.min().as("fileId"))).from(qCourse)
+                .leftJoin(qCourseData).on(qCourseData.courseId.eq(qCourse.courseId))
+                .leftJoin(qTouristImgPath).on(qTouristImgPath.touristId.eq(qCourseData.touristId))
+                .where(qCourse.courseName.contains(courseName).and(qCourseData.courseDataId.eq(1)))
+                .groupBy(qCourse.courseId)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize()).fetchResults();
 

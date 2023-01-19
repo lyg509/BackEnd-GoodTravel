@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.course.controller;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
 import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.request.CourseHitsPostReq;
@@ -88,7 +89,7 @@ public class CourseController {
             @ApiParam(value = "코스 명") @PathVariable("courseName") String courseName, int page, int size) {
         log.info("courseSearch - Call");
 
-        Page<Course> courseSearchList = courseService.courseSearch(courseName, PageRequest.of(page - 1, size));
+        Page<CourseSearch> courseSearchList = courseService.courseSearch(courseName, PageRequest.of(page - 1, size));
 
         return ResponseEntity
                 .status(200)

@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.course.service;
 
+import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
 import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 @Service
-public class CourseServiceImpl implements CourseService{
+public class CourseServiceImpl implements CourseService {
 
     @Autowired
     CourseRepository courseRepository;
@@ -32,14 +33,14 @@ public class CourseServiceImpl implements CourseService{
 
     @Override
     public int courseHits(CourseHitsPostReq courseHitsPostReq) {
-        if(courseRepository.findById(courseHitsPostReq.getCourseId()).isPresent()) {
+        if (courseRepository.findById(courseHitsPostReq.getCourseId()).isPresent()) {
             int courseId = courseRepository
                     .findById(courseHitsPostReq.getCourseId()).get().getCourseId();
 
             courseRepository.courseHitsByCourseId(courseId);
 
             return SUCCESS;
-        }else return FAIL;
+        } else return FAIL;
     }
 
     @Override
@@ -85,8 +86,5 @@ public class CourseServiceImpl implements CourseService{
         return courseRepositorySpp.findPopularCourse(pageable);
     }
 
-    @Override
-    public Page<Course> courseSearch(String courseName, Pageable pageable) {
-        return courseRepositorySpp.findCourseSearch(courseName, pageable);
-    }
+    public Page<CourseSearch> courseSearch(String courseName, Pageable pageable) { return courseRepositorySpp.findCourseSearch(courseName, pageable); }
 }

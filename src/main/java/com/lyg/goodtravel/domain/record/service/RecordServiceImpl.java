@@ -133,4 +133,15 @@ public class RecordServiceImpl implements RecordService {
     public List<Record> recordWriteListByUser(int userId, int courseId) {
         return recordRepository.findRecordByUserIdAndCourseId(userId, courseId);
     }
+
+    @Override
+    public String getRecordImgPath(int fileId, int recordId, int courseId) {
+        RecordImgPath recordImgPath = recordImgPathRepository
+                .findRecordImgPathByFileIdAndRecordIdAndCourseId(fileId, recordId, courseId);
+
+        String path = uploadPath + recordImgPath.getFileUrl();
+
+        System.out.println(path);
+        return path;
+    }
 }

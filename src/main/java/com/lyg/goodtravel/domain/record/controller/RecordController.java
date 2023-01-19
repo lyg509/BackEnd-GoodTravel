@@ -11,10 +11,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.IOException;
 import java.util.List;
 
 @Api("여행 레코드(일기) API")
@@ -30,34 +33,52 @@ public class RecordController {
     private static final int FAIL = -1;
 
     @ApiOperation(value = "여행 레코드(일기) 등록", notes = "코스 방문을 시작하면 여행 레코드(일기) 작성이 가능하다.")
-    @PostMapping("")
+    @PostMapping(value = "" ,
+            consumes= {MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<? extends BaseResponseBody> recordRegister(
-            RecordRegisterPostReq recordRegisterPostReq) {
+            @RequestPart(value = "recordRegister") RecordRegisterPostReq recordRegisterPostReq,
+            MultipartHttpServletRequest request) {
 
         log.info("recordRegister - Call");
 
-        if (recordService.recordRegisterByUser(recordRegisterPostReq) == SUCCESS) {
-            return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
-        } else return ResponseEntity.status(404).body(BaseResponseBody.of(403, "There is " +
-                "no completed course."));
+        try {
+            if(recordService.recordRegisterByUser(recordRegisterPostReq, request) == SUCCESS) {
+                return ResponseEntity
+                        .status(201)
+                        .body(BaseResponseBody.of(201, "Success"));
+            }else {
+                return ResponseEntity
+                        .status(400)
+                        .body(BaseResponseBody.of(400, "Failed"));
+            }
+
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(400)
+                    .body(BaseResponseBody.of(400, "Failed"));
+        }
     }
 
     @ApiOperation(value = "여행 레코드(일기) 수정")
     @PutMapping("")
-    public ResponseEntity<? extends BaseResponseBody> recordModify(
-            @RequestBody RecordModifyPostReq recordRegisterPostReq) {
+    public ResponseEntity<? extends BaseResponseBody> recordModify (
+            @RequestBody RecordModifyPostReq recordModifyPostReq) {
+        log.info("recordModify - Call");
 
-        log.info("recordModify = Call");
-
-        if (recordService.recordModifyByUser(recordRegisterPostReq) == SUCCESS) {
-            return ResponseEntity.status(201).body(
-                    BaseResponseBody.of(201, "Success"));
-        } else
+        if (recordService.recordModifyByUser(recordModifyPostReq) == SUCCESS) {
+            return ResponseEntity
+                    .status(201)
+                    .body(BaseResponseBody.of(201, "Success"));
+        } else {
             log.error("qnaQuestionModify - This questionId doesn't exist.");
-            return ResponseEntity.status(404).body(
-                    BaseResponseBody.of(403, "There is" +
-                "no completed course.l"));
+            return ResponseEntity
+                    .status(404)
+                    .body(BaseResponseBody.of(404, "This recordId doesn't exist."));
+        }
     }
+
 
     @ApiOperation(value = "사용자가 작성한 여행 레코드(일기) 조회", notes = "사용자가 코스 방문 시, 작성했던 여행 레코드(일기)는 마이페이지에서 조회가 가능하다.")
     @GetMapping("/{userId}/{courseId}")
@@ -69,12 +90,14 @@ public class RecordController {
         List<Record> recordWriteList = recordService.recordWriteListByUser(userId, courseId);
 
         if (recordWriteList != null && !recordWriteList.isEmpty()) {
-            return ResponseEntity.status(200).body(
-                    RecordWriteListGetRes.of(200, "Success", recordWriteList));
+            return ResponseEntity
+                    .status(201)
+                    .body(RecordWriteListGetRes.of(200, "Success", recordWriteList));
         }else {
             log.error("recordWriteList - Record doesn't exist.");
-            return ResponseEntity.status(400).body(
-                    RecordWriteListGetRes.of(400, "Record doesn't exist", null));
+            return ResponseEntity
+                    .status(400)
+                    .body(RecordWriteListGetRes.of(400, "Record doesn't exist", null));
         }
     }
 }

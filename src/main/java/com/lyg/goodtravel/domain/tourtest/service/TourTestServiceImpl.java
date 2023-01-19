@@ -2,6 +2,7 @@ package com.lyg.goodtravel.domain.tourtest.service;
 
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.db.repository.CourseRepository;
+import com.lyg.goodtravel.domain.tourtest.db.bean.TourTestCourse;
 import com.lyg.goodtravel.domain.tourtest.repository.TourTestRepository;
 import com.lyg.goodtravel.domain.tourtest.repository.TourTestRepositorySpp;
 import com.lyg.goodtravel.domain.tourtest.request.TourTestResultPostReq;
@@ -52,10 +53,7 @@ public class TourTestServiceImpl implements TourTestService {
         }
     }
 
-    @Override
-    public List<Course> tourTestCourseByUser(int courseId1, int courseId2) {
-        return courseRepository.tourTestCourseByUser(courseId1, courseId2);
-    }
+    public List<TourTestCourse> tourTestCourseByUser(int courseId) { return tourTestRepositorySpp.findTourTestCourseByUser(courseId); }
 
     @Override
     public List<Integer> tourTestResult() {

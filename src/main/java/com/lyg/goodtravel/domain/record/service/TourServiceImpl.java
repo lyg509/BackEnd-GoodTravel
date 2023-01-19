@@ -30,16 +30,28 @@ public class TourServiceImpl implements TourService {
     RecordTagRepository recordTagRepository;
 
     @Autowired
-    TagRepository tagRepository;
+    TagCodeRepository tagCodeRepository;
 
     @Autowired
-    TagCodeRepository tagCodeRepository;
+    TagRepository tagRepository;
 
     @Autowired
     TourRepositorySpp tourRepositorySpp;
 
     private static final int SUCCESS = 1;
     private static final int FAIL = -1;
+
+
+    @Override
+    public boolean courseIsStartByUser(int userId, int courseId) {
+        TourID tourID = new TourID();
+        tourID.setUserId(userId);
+        tourID.setCourseId(courseId);
+
+        if(tourRepository.findById(tourID).isPresent()) {
+            return tourRepository.existsTourByUserIdAndCourseId(userId, courseId);
+        } else return false;
+    }
 
     @Override
     public int courseStartByUser(TourStartPostReq tourStartPostReq) {

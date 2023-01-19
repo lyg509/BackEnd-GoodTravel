@@ -8,6 +8,7 @@ import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
 import com.lyg.goodtravel.domain.record.request.TourStartPostReq;
 import com.lyg.goodtravel.domain.record.request.TouristVisitPostReq;
 import com.lyg.goodtravel.domain.record.response.TagListGetRes;
+import com.lyg.goodtravel.domain.record.response.TourIsStartGetRes;
 import com.lyg.goodtravel.domain.record.response.TouristNameVisitGetRes;
 import com.lyg.goodtravel.domain.record.service.TourService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
@@ -66,6 +67,23 @@ public class TourController {
                     .status(404)
                     .body(BaseResponseBody
                             .of(403, "userId or courseId doesn't exist"));
+    }
+
+    @ApiOperation(value = "여행 시작 여부")
+    @GetMapping("/tour-start/{userId}/{courseId}")
+    public ResponseEntity<TourIsStartGetRes> courseIsStart(
+            @ApiParam(value = "회원 구분 번호") @PathVariable("userId") int userId,
+            @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
+        log.info("courseIsStart - Call");
+
+        if(tourService.courseIsStartByUser(userId, courseId)) {
+            return ResponseEntity
+                    .status(200)
+                    .body(TourIsStartGetRes.of(200, "Success", true));
+        } else
+            return ResponseEntity
+                    .status(200)
+                    .body(TourIsStartGetRes.of(200, "Success", false));
     }
 
     @ApiOperation(value = "코스에 대한 관광지 방문", notes = "코스에 등록 된 관광지를 방문하면 방문 등록(스탬프) 된다.")

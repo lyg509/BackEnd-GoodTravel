@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.record.controller;
 
+import com.lyg.goodtravel.domain.record.db.bean.RecordWriteList;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
 import com.lyg.goodtravel.domain.record.request.RecordModifyPostReq;
 import com.lyg.goodtravel.domain.record.request.RecordRegisterPostReq;
@@ -97,7 +98,7 @@ public class RecordController {
             @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
         log.info("recordWriteList - Call");
 
-        List<Record> recordWriteList = recordService.recordWriteListByUser(userId, courseId);
+        List<RecordWriteList> recordWriteList = recordService.recordWriteListByUser(userId, courseId);
 
         if (recordWriteList != null && !recordWriteList.isEmpty()) {
             return ResponseEntity

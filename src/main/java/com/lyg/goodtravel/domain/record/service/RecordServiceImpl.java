@@ -1,11 +1,9 @@
 package com.lyg.goodtravel.domain.record.service;
 
+import com.lyg.goodtravel.domain.record.db.bean.RecordWriteList;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
 import com.lyg.goodtravel.domain.record.db.entity.RecordImgPath;
-import com.lyg.goodtravel.domain.record.db.repository.RecordImgPathRepository;
-import com.lyg.goodtravel.domain.record.db.repository.RecordRepository;
-import com.lyg.goodtravel.domain.record.db.repository.TourRepository;
-import com.lyg.goodtravel.domain.record.db.repository.TourStampRepository;
+import com.lyg.goodtravel.domain.record.db.repository.*;
 import com.lyg.goodtravel.domain.record.request.RecordModifyPostReq;
 import com.lyg.goodtravel.domain.record.request.RecordRegisterPostReq;
 import org.apache.commons.io.FilenameUtils;
@@ -40,6 +38,8 @@ public class RecordServiceImpl implements RecordService {
     private static final int SUCCESS = 1;
     private static final int FAIL = -1;
 
+    @Autowired
+    RecordRepositorySpp recordRepositorySpp;
 
     @Value("${app.fileupload.uploadDir}")
     private String uploadFolder;
@@ -130,10 +130,9 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public List<Record> recordWriteListByUser(int userId, int courseId) {
-        return recordRepository.findRecordByUserIdAndCourseId(userId, courseId);
+    public List<RecordWriteList> recordWriteListByUser(int userId, int courseId) {
+        return recordRepositorySpp.findRecordWriteList(userId, courseId);
     }
-
     @Override
     public String getRecordImgPath(int fileId, int recordId, int courseId) {
         RecordImgPath recordImgPath = recordImgPathRepository

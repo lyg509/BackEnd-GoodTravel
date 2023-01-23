@@ -1,6 +1,8 @@
 package com.lyg.goodtravel.domain.record.db.repository;
 
 import com.lyg.goodtravel.domain.course.db.entity.QCourse;
+import com.lyg.goodtravel.domain.course.db.entity.QCourseData;
+import com.lyg.goodtravel.domain.course.db.entity.QTourist;
 import com.lyg.goodtravel.domain.record.db.bean.RecordWriteList;
 import com.lyg.goodtravel.domain.record.db.entity.QRecord;
 import com.lyg.goodtravel.domain.record.db.entity.QRecordImgPath;
@@ -21,23 +23,19 @@ public class RecordRepositorySpp {
     QRecordImgPath qRecordImgPath = QRecordImgPath.recordImgPath;
 
     QCourse qCourse = QCourse.course;
+    QCourseData qCourseData = QCourseData.courseData;
+    QTourist qTourist = QTourist.tourist;
 
-    QUser qUser = QUser.user;
-
-    public List<RecordWriteList> findRecordWriteList (int userId, int courseId) {
-        return jpaQueryFactory
-                .select(Projections.constructor(RecordWriteList.class,
-                        qRecord.recordId,
-                        qRecord.userId,
-                        qRecord.courseId,
-                        qRecord.recordContent,
-                        qRecord.recordRegDt,
-                        qRecordImgPath.fileId))
+    public List<RecordWriteList> findRecordWriteList (int userId) {
+        return jpaQueryFactory.select(Projections.constructor(RecordWriteList.class, qRecord.recordId, qCourse.courseId, qTourist.touristId,
+                        qTourist.touristLat, qTourist.touristLng, qRecord.recordContent, qRecord.recordRegDt, qRecordImgPath.fileId.min().as("fileId")))
                 .from(qRecord)
-                .leftJoin(qRecordImgPath).on(qRecordImgPath.recordId.eq(qRecord.recordId))
                 .leftJoin(qCourse).on(qCourse.courseId.eq(qRecord.courseId))
-                .leftJoin(qUser).on(qUser.userId.eq(qRecord.userId))
-                .where(qRecord.userId.eq(userId).and(qRecord.courseId.eq(courseId)))
+                .leftJoin(qCourseData).on(qCourseData.courseId.eq(qCourse.courseId))
+                .leftJoin(qTourist).on(qTourist.touristId.eq(qCourseData.touristId))
+                .leftJoin(qRecordImgPath).on(qRecordImgPath.recordId.eq(qRecord.recordId))
+                .where(qRecord.userId.eq(userId).and(qCourseData.courseDataId.eq(1)))
+                .groupBy(qRecord.recordId)
                 .fetch();
     }
 

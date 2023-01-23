@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.user.db.repository;
 
+import com.lyg.goodtravel.domain.course.db.entity.QCourse;
 import com.lyg.goodtravel.domain.user.db.bean.AreaAnalysisDetail;
 import com.lyg.goodtravel.domain.course.db.entity.QCourseData;
 import com.lyg.goodtravel.domain.course.db.entity.QTourist;
@@ -25,6 +26,7 @@ public class UserRepositorySpp {
     QCourseData qCourseData = QCourseData.courseData;
     QTourist qTourist = QTourist.tourist;
     QTourStamp qTourStamp = QTourStamp.tourStamp;
+    QCourse qCourse = QCourse.course;
 
     public User findByEmail(String userEmail) {
         return jpaQueryFactory.select(quser).from(quser)
@@ -34,13 +36,14 @@ public class UserRepositorySpp {
     ;
 
     //방문한 사용자 코스 데이터 Query
-    public List<CourseNameVisitDetail> courseVisitDetailByUserId(int userId) {
+    public List<CourseNameVisitDetail> courseVisitDetailByUserId(int userId){
         return jpaQueryFactory.select(Projections.constructor(CourseNameVisitDetail.class,
-                        qTour.courseId.as("courseId"), qTourist.touristLat.as("touristLat")
-                        , qTourist.touristLng.as("touristLng")))
+                        qTour.courseId.as("courseId"), qCourse.courseName.as("courseName"), qTourist.touristLat.as("touristLat")
+                        ,qTourist.touristLng.as("touristLng")))
                 .from(qTour).join(qCourseData).on(qCourseData.courseId.eq(qTour.courseId))
                 .join(qTourist).on(qTourist.touristId.eq(qCourseData.touristId))
-                .where(qTour.isEnd.eq(true).and(qTour.userId.eq(userId))).fetch();
+                .join(qCourse).on(qCourse.courseId.eq(qTour.courseId))
+                .where(qTour.isEnd.eq(true).and(qTour.userId.eq(userId)).and(qCourseData.courseDataId.eq(1))).fetch();
 
     }
 

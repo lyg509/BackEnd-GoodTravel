@@ -17,7 +17,7 @@ public class AreaCountRes extends BaseResponseBody {
     @ApiModelProperty(value = "지역별 관광지 개수 정보")
     List<AreaCount> areaCounts = new ArrayList<>();
 
-    public static AreaCountRes of(Integer statusCode, String message, List<AreaCount> list) {
+    public static AreaCountRes of (Integer statusCode, String message,List<AreaCount> list){
         AreaCountRes res = new AreaCountRes();
         res.setStatusCode(statusCode);
         res.setMessage(message);

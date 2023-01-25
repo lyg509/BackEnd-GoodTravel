@@ -1,9 +1,6 @@
 package com.lyg.goodtravel.domain.course.service;
 
-import com.lyg.goodtravel.domain.course.db.bean.AreaPopularCourse;
-import com.lyg.goodtravel.domain.course.db.bean.CourseInfo;
-import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
-import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
+import com.lyg.goodtravel.domain.course.db.bean.*;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
@@ -117,5 +114,11 @@ public class CourseServiceImpl implements CourseService {
 
 
         return courseRepositorySpp.findPopularCourse(newAreaName);
+    }
+
+    @Override
+    public List<KeywordCourse> keywordCourseList(String keywordName) {
+
+        return courseRepositorySpp.keywordCourseList(keywordName);
     }
 }

@@ -1,9 +1,6 @@
 package com.lyg.goodtravel.domain.course.service;
 
-import com.lyg.goodtravel.domain.course.db.bean.AreaPopularCourse;
-import com.lyg.goodtravel.domain.course.db.bean.CourseInfo;
-import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
-import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
+import com.lyg.goodtravel.domain.course.db.bean.*;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.request.CourseHitsPostReq;
 import com.lyg.goodtravel.domain.course.request.CourseRegisterPostReq;
@@ -20,4 +17,5 @@ public interface CourseService {
     Page<CourseInfo> courseSearch(String courseName, Pageable pageable); // 코스 검색
 
     List<AreaPopularCourse> areaPopularCourseFind(String areaName); // 지역별 인기 코스
+    List<KeywordCourse> keywordCourseList(String keywordName);//키워드별 코스 추천
 }

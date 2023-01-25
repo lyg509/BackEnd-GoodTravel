@@ -23,6 +23,9 @@ public class CourseRepositorySpp {
     QTouristImgPath qTouristImgPath = QTouristImgPath.touristImgPath;
     QBookmark qBookmark = QBookmark.bookmark;
     QTourist qTourist = QTourist.tourist;
+    QCourseKeyword qCourseKeyword = QCourseKeyword.courseKeyword;
+
+
 
 
     // 북마크한 코스 조회
@@ -119,5 +122,23 @@ public class CourseRepositorySpp {
                 .orderBy(qBookmark.courseId.count().desc()).limit(5)
                 .fetch();
 
+    }
+
+    //키워드 추천 코스
+    public List<KeywordCourse> keywordCourseList(String keywordName){
+        return jpaQueryFactory
+                .select(Projections.constructor(KeywordCourse.class,
+                        qCourse.courseName,
+                        qTouristImgPath.fileId.min(),
+                        qCourseKeyword.keywordId,
+                        qCourseKeyword.keywordName,
+                        qCourseData.touristId))
+                .from(qCourseKeyword)
+                .leftJoin(qCourse).on(qCourse.courseId.eq(qCourseKeyword.courseId))
+                .leftJoin(qCourseData).on(qCourseData.courseId.eq(qCourseKeyword.courseId))
+                .leftJoin(qTouristImgPath).on(qTouristImgPath.touristId.eq(qCourseData.touristId))
+                .where(qCourseData.courseDataId.eq(1).and(qCourseKeyword.keywordName.eq(keywordName))
+                )
+                .groupBy(qCourse.courseName,qCourseKeyword.keywordId).limit(20).fetch();
     }
 }

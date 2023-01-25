@@ -1,16 +1,10 @@
 package com.lyg.goodtravel.domain.course.controller;
 
-import com.lyg.goodtravel.domain.course.db.bean.AreaPopularCourse;
-import com.lyg.goodtravel.domain.course.db.bean.CourseInfo;
-import com.lyg.goodtravel.domain.course.db.bean.CourseSearch;
-import com.lyg.goodtravel.domain.course.db.bean.PopularCourse;
+import com.lyg.goodtravel.domain.course.db.bean.*;
 import com.lyg.goodtravel.domain.course.db.entity.Course;
 import com.lyg.goodtravel.domain.course.request.CourseHitsPostReq;
 import com.lyg.goodtravel.domain.course.request.CourseRegisterPostReq;
-import com.lyg.goodtravel.domain.course.response.AreaPopularCourseRes;
-import com.lyg.goodtravel.domain.course.response.CourseListGetRes;
-import com.lyg.goodtravel.domain.course.response.CourseSearchGetRes;
-import com.lyg.goodtravel.domain.course.response.PopularCourseGetRes;
+import com.lyg.goodtravel.domain.course.response.*;
 import com.lyg.goodtravel.domain.course.service.CourseService;
 import com.lyg.goodtravel.global.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
@@ -25,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 
 @Api("관광지 코스 API")
 @Slf4j
@@ -38,6 +33,8 @@ public class CourseController {
     private static final int SUCCESS = 1;
     private static final int FAIL = -1;
 
+    private static String[] keywords = {"자연","산","바다","강","호수","가을","여름",
+            "봄","겨울","전통","체험","공원","역사","힐링","혼자","홀로","음식","식당"};
 
     @ApiOperation(value = "코스 조회수", notes = "코스 상세보기를 하면 조회수가 증가한다.")
     @PutMapping("/course-hits")
@@ -132,5 +129,36 @@ public class CourseController {
         }else {
             return ResponseEntity.status(200).body((AreaPopularCourseRes.of(200,"Popular course doesn't exist",null)));
         }
+    }
+
+
+
+    @ApiOperation(value = "키워드별 코스 추천")
+    @GetMapping("/")
+    public ResponseEntity<KeywordCourseRes>keywordCourseByKeyword(){
+        log.info("keywordCourseByKeyword - call");
+
+        int[] ranNum= new int[3];
+
+        Random rand = new Random();
+
+        for(int i=0; i < 3;i++){
+            int num = rand.nextInt(18);
+
+            for (int n :ranNum){
+                if(n == num){
+                    i--;
+                    break;
+                }
+            }
+
+            ranNum[i] = num;
+        }
+
+        List<KeywordCourse> list1 = courseService.keywordCourseList(keywords[ranNum[0]]);
+        List<KeywordCourse> list2 = courseService.keywordCourseList(keywords[ranNum[1]]);
+        List<KeywordCourse> list3 = courseService.keywordCourseList(keywords[ranNum[2]]);
+
+        return ResponseEntity.status(200).body((KeywordCourseRes.of(keywords[ranNum[0]],list1,keywords[ranNum[1]],list2,keywords[ranNum[2]],list3,"Success",200)));
     }
 }

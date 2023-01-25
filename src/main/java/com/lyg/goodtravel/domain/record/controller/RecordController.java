@@ -102,7 +102,7 @@ public class RecordController {
 
         if (recordWriteList != null && !recordWriteList.isEmpty()) {
             return ResponseEntity
-                    .status(201)
+                    .status(200)
                     .body(RecordWriteListGetRes.of(200, "Success", recordWriteList));
         }else {
             log.error("recordWriteList - Record doesn't exist.");

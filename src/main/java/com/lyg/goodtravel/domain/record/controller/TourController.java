@@ -51,11 +51,14 @@ public class TourController {
             return ResponseEntity
                     .status(201)
                     .body(BaseResponseBody.of(201, "Success"));
-        } else
-            return ResponseEntity.
-                    status(403)
-                    .body(BaseResponseBody
-                            .of(403, "userId or courseId doesn't exist"));
+        } else if (tourService.courseStartByUser(tourStartPostReq) == NONE) {
+            return  ResponseEntity
+                    .status(201)
+                    .body(BaseResponseBody.of(201,"Traveling"));
+        }
+        return ResponseEntity
+                .status(403)
+                .body(BaseResponseBody.of(403, "userId or courseId doesn't exist"));
     }
 
 

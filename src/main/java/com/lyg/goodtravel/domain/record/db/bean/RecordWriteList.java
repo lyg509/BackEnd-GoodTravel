@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class RecordWriteList {
     private int recordId;
     private int courseId;
+    private String courseName;
     private int touristId;
     private double touristLat;
     private double touristLng;

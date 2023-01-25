@@ -3,6 +3,7 @@ package com.lyg.goodtravel.domain.record.controller;
 import com.lyg.goodtravel.domain.course.db.bean.VisitTouristName;
 import com.lyg.goodtravel.domain.course.db.entity.CourseData;
 import com.lyg.goodtravel.domain.record.db.entity.TagCode;
+import com.lyg.goodtravel.domain.record.db.repository.TourStampRepository;
 import com.lyg.goodtravel.domain.record.request.TagRegisterPostReq;
 import com.lyg.goodtravel.domain.record.request.TourEndPostReq;
 import com.lyg.goodtravel.domain.record.request.TourStartPostReq;
@@ -32,7 +33,11 @@ public class TourController {
     @Autowired
     TourService tourService;
 
+    @Autowired
+    TourStampRepository tourStampRepository;
+
     private static final int SUCCESS = 1;
+    private static final int NONE = 2;
     private static final int FAIL = -1;
 
 
@@ -48,25 +53,47 @@ public class TourController {
                     .body(BaseResponseBody.of(201, "Success"));
         } else
             return ResponseEntity.
-                    status(404)
+                    status(403)
                     .body(BaseResponseBody
                             .of(403, "userId or courseId doesn't exist"));
     }
 
+
     @ApiOperation(value = "여행 종료")
     @PutMapping("/tour-end")
-    public ResponseEntity<? extends BaseResponseBody> courseEnd(
-            @RequestBody TourEndPostReq tourEndPostReq) {
+    public ResponseEntity<? extends BaseResponseBody> courseEnd(@RequestBody TourEndPostReq tourEndPostReq) {
         log.info("tourEndByUser - Call");
 
-        if (tourService.courseEndByUser(tourEndPostReq) == SUCCESS) {
-            return ResponseEntity.status(201).body(
-                    BaseResponseBody.of(201, "Success"));
-        } else
+        int userId = tourEndPostReq.getUserId();
+        int courseId = tourEndPostReq.getCourseId();
+
+        if(tourStampRepository.isStampByUserIdandCourseId(userId, courseId) != 0) {
+            if(tourService.courseEndByUser(tourEndPostReq) == SUCCESS) {
+                return ResponseEntity
+                        .status(201)
+                        .body(BaseResponseBody.of(201, "Success"));
+            }else {
+                return ResponseEntity
+                        .status(403)
+                        .body(BaseResponseBody.of(403, "userId or courseId doesn't exist"));
+            }
+
+        }else if(tourStampRepository.isStampByUserIdandCourseId(userId, courseId) == 0){
+            if (tourService.courseGivingUpByUser(tourEndPostReq) == NONE) {
+                return ResponseEntity
+                        .status(201)
+                        .body(BaseResponseBody
+                                .of(201, "Success"));
+            }else {
+                return ResponseEntity
+                        .status(403)
+                        .body(BaseResponseBody.of(403, "userId or courseId doesn't exist"));
+            }
+        }else {
             return ResponseEntity
-                    .status(404)
-                    .body(BaseResponseBody
-                            .of(403, "userId or courseId doesn't exist"));
+                    .status(403)
+                    .body(BaseResponseBody.of(403, "userId or courseId doesn't exist"));
+        }
     }
 
     @ApiOperation(value = "여행 시작 여부")
@@ -116,8 +143,9 @@ public class TourController {
         } else {
             log.error("touristNameVisit - stamp doesn't exist");
             return ResponseEntity
-                    .status(400).body(TouristNameVisitGetRes
-                    .of(400, "stamp doesn't exist", null));
+                    .status(400)
+                    .body(TouristNameVisitGetRes
+                            .of(400, "stamp doesn't exist", null));
         }
     }
 

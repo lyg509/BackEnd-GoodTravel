@@ -13,6 +13,7 @@ import java.util.List;
 public interface TourService {
     int courseStartByUser(TourStartPostReq tourStartPostReq);
     int courseEndByUser(TourEndPostReq tourEndPostReq);
+    int courseGivingUpByUser(TourEndPostReq tourEndPostReq);
     int courseIsStartByUser(int userId);
 
     int touristVisitByUser(TouristVisitPostReq touristVisitPostReq);

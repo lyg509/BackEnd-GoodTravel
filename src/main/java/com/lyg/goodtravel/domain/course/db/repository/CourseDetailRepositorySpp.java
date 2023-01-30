@@ -71,10 +71,14 @@ public class CourseDetailRepositorySpp {
         return jpaQueryFactory
                 .select(Projections.constructor(CourseRecordDetail.class,
                         qRecord.courseId,
+                        qRecord.userId,
+                        qUser.userName,
+                        qUser.userEmail,
                         qRecord.recordId,
                         qRecord.recordContent,
                         qRecord.recordRegDt,
-                        qRecordImgPath.fileId.min().as("fileId"))).from(qRecord)
+                        qRecordImgPath.fileId.min().as("fileId")))
+                .from(qRecord)
                 .leftJoin(qUser).on(qUser.userId.eq(qRecord.userId))
                 .leftJoin(qCourse).on(qCourse.courseId.eq(qRecord.courseId))
                 .leftJoin(qRecordImgPath).on(qRecordImgPath.recordId.eq(qRecord.recordId))
@@ -82,6 +86,7 @@ public class CourseDetailRepositorySpp {
                 .groupBy(qRecord.recordId)
                 .fetch();
     }
+
 
 
 

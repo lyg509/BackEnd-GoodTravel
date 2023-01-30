@@ -129,6 +129,7 @@ public class CourseRepositorySpp {
         return jpaQueryFactory
                 .select(Projections.constructor(KeywordCourse.class,
                         qCourse.courseName,
+                        qCourse.courseId,
                         qTouristImgPath.fileId.min(),
                         qCourseKeyword.keywordId,
                         qCourseKeyword.keywordName,

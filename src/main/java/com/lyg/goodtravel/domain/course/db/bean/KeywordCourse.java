@@ -10,6 +10,7 @@ import lombok.Getter;
 public class KeywordCourse {
 
     private String courseName;
+    private int courseId;
     private int fileId;
     private int keywordId;
     private String keywordName;

@@ -2,6 +2,7 @@ package com.lyg.goodtravel.domain.course.service;
 
 import com.lyg.goodtravel.domain.course.db.bean.*;
 import com.lyg.goodtravel.domain.course.db.repository.BookmarkRepository;
+import com.lyg.goodtravel.domain.course.db.repository.CourseDataRepository;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDetailRepositorySpp;
 import com.lyg.goodtravel.domain.course.db.repository.CourseRepository;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
@@ -18,6 +19,9 @@ public class CourseDetailServiceImpl implements CourseDetailService {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    CourseDataRepository courseDataRepository;
 
     @Autowired
     TourTestRepository tourTestRepository;
@@ -82,5 +86,10 @@ public class CourseDetailServiceImpl implements CourseDetailService {
         double connectionPer = Math.round(tourStartCount + stampCount + bookmarkCount);
 
         return connectionPer;
+    }
+
+    @Override
+    public int courseTourCount(int courseId) {
+        return courseDataRepository.countCourseTourUser(courseId);
     }
 }

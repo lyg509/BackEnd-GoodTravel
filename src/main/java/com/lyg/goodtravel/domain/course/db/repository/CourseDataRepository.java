@@ -13,4 +13,10 @@ public interface CourseDataRepository extends JpaRepository<CourseData, CourseDa
 
     @Query("select count(c.courseId) from CourseData c where c.courseId = :courseId")
     int countCourseDataByCourseId(int courseId); // 코스에 포함된 관광지 개수
+
+    @Query("select count(u.userId) from Tour t " +
+            "left join User u on u.userId = t.userId " +
+            "left join Course c on c.courseId = t.courseId " +
+            "where t.courseId = :courseId and t.isStart = true and t.isEnd = false")
+    int countCourseTourUser(int courseId);
 }

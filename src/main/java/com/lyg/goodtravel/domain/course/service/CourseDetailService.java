@@ -14,4 +14,6 @@ public interface CourseDetailService {
     List<CourseTagDetail> courseTagDetail(int courseId);
 
     double courseConnection(int courseId);
+
+    int courseTourCount(int courseId);
 }

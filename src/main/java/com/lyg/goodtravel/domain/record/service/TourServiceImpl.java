@@ -35,7 +35,7 @@ public class TourServiceImpl implements TourService {
     @Autowired
     TagRepository tagRepository;
 
-    @Autowired
+
     TourRepositorySpp tourRepositorySpp;
 
     private static final int SUCCESS = 1;
@@ -118,7 +118,10 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public int courseIsStartByUser(int userId) {
-        return tourRepositorySpp.findVisitIsStartByUser(userId);
+        if(tourRepositorySpp.findVisitIsStartByUser(userId) != null ) {
+            return tourRepositorySpp.findVisitIsStartByUser(userId);
+        }
+        return 0;
     }
 
 

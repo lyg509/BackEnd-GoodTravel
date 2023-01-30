@@ -6,6 +6,7 @@ import com.lyg.goodtravel.domain.record.db.entity.RecordImgPath;
 import com.lyg.goodtravel.domain.record.db.repository.*;
 import com.lyg.goodtravel.domain.record.request.RecordModifyPostReq;
 import com.lyg.goodtravel.domain.record.request.RecordRegisterPostReq;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
+@Slf4j
 @Service
 public class RecordServiceImpl implements RecordService {
 
@@ -34,12 +35,13 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     RecordImgPathRepository recordImgPathRepository;
 
+    @Autowired
+    RecordRepositorySpp recordRepositorySpp;
 
     private static final int SUCCESS = 1;
     private static final int FAIL = -1;
 
-    @Autowired
-    RecordRepositorySpp recordRepositorySpp;
+
 
     @Value("${app.fileupload.uploadDir}")
     private String uploadFolder;
@@ -143,4 +145,10 @@ public class RecordServiceImpl implements RecordService {
         System.out.println(path);
         return path;
     }
+
+    @Override
+    public int recordIdPostRes(int courseId, int userId) {
+        return recordRepository.findRecordId(courseId, userId);
+    }
+
 }

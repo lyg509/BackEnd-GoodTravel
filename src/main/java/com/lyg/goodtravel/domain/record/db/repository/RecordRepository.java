@@ -14,8 +14,11 @@ public interface RecordRepository extends JpaRepository<Record, Integer> {
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query("update Record r set r.recordContent = :recordContent where r.recordId = recordId")
+    @Query("update Record r set r.recordContent = :recordContent where r.recordId = :recordId")
     int recordModifyByUser(int recordId, String recordContent);
 
     List<Record> findRecordByUserIdAndCourseId(int userId, int courseId);
+
+    @Query("select recordId from Record where courseId = :courseId and userId = :userId")
+    int findRecordId(int courseId, int userId);
 }

@@ -1,5 +1,6 @@
 package com.lyg.goodtravel.domain.record.controller;
 
+import com.lyg.goodtravel.domain.course.response.RecordRegisterPostRes;
 import com.lyg.goodtravel.domain.record.db.bean.RecordWriteList;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
 import com.lyg.goodtravel.domain.record.request.RecordModifyPostReq;
@@ -47,7 +48,7 @@ public class RecordController {
     @PostMapping(value = "" ,
             consumes= {MediaType.APPLICATION_JSON_VALUE,
                     MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<? extends BaseResponseBody> recordRegister(
+    public ResponseEntity<RecordRegisterPostRes> recordRegister(
             @RequestPart(value = "recordRegister") RecordRegisterPostReq recordRegisterPostReq,
             MultipartHttpServletRequest request) {
 
@@ -55,20 +56,22 @@ public class RecordController {
 
         try {
             if(recordService.recordRegisterByUser(recordRegisterPostReq, request) == SUCCESS) {
+                int recordId = recordService.recordIdPostRes(recordRegisterPostReq.getCourseId(), recordRegisterPostReq.getUserId());
+
                 return ResponseEntity
                         .status(201)
-                        .body(BaseResponseBody.of(201, "Success"));
+                        .body(RecordRegisterPostRes.of(201, "Success", recordId));
             }else {
                 return ResponseEntity
                         .status(400)
-                        .body(BaseResponseBody.of(400, "Failed"));
+                        .body(RecordRegisterPostRes.of(400, "Failed", 0));
             }
 
         } catch (IOException e) {
             log.error(e.getMessage());
             return ResponseEntity
                     .status(400)
-                    .body(BaseResponseBody.of(400, "Failed"));
+                    .body(RecordRegisterPostRes.of(400, "Failed", 0));
         }
     }
 

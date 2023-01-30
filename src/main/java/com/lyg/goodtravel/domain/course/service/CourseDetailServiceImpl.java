@@ -1,10 +1,6 @@
 package com.lyg.goodtravel.domain.course.service;
 
-import com.lyg.goodtravel.domain.course.db.bean.CourseDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTagDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTourTestResultDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTouristDetail;
-import com.lyg.goodtravel.domain.course.db.entity.CourseData;
+import com.lyg.goodtravel.domain.course.db.bean.*;
 import com.lyg.goodtravel.domain.course.db.repository.BookmarkRepository;
 import com.lyg.goodtravel.domain.course.db.repository.CourseDetailRepositorySpp;
 import com.lyg.goodtravel.domain.course.db.repository.CourseRepository;
@@ -48,8 +44,7 @@ public class CourseDetailServiceImpl implements CourseDetailService {
 
 
     @Override
-    public List<Record> courseRecordDetail(int courseId) { return courseDetailRepositorySpp.courseRecordDetailByCourseId(courseId); }
-
+    public List<CourseRecordDetail> courseRecordDetail(int courseId) { return courseDetailRepositorySpp.courseRecordDetailByCourseId(courseId); }
 
     @Override
     public List<CourseTourTestResultDetail> courseTourTestResultDetail(int courseId) { return courseDetailRepositorySpp.courseTourTestResultDetailByCourseId(courseId); }

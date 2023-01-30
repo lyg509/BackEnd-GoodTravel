@@ -1,9 +1,6 @@
 package com.lyg.goodtravel.domain.course.db.repository;
 
-import com.lyg.goodtravel.domain.course.db.bean.CourseDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTagDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTourTestResultDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTouristDetail;
+import com.lyg.goodtravel.domain.course.db.bean.*;
 import com.lyg.goodtravel.domain.course.db.entity.*;
 import com.lyg.goodtravel.domain.record.db.entity.*;
 import com.lyg.goodtravel.domain.tourtest.db.entity.QTourTest;
@@ -28,6 +25,7 @@ public class CourseDetailRepositorySpp {
     QTour qTour = QTour.tour;
     QRecord qRecord = QRecord.record;
     QRecordTag qRecordTag = QRecordTag.recordTag;
+    QRecordImgPath qRecordImgPath = QRecordImgPath.recordImgPath;
 
     QUser qUser = QUser.user;
 
@@ -69,14 +67,22 @@ public class CourseDetailRepositorySpp {
 
 
     // 코스 여행 레코드(일기) 조회 Query
-    public List<Record> courseRecordDetailByCourseId(int courseId) {
+    public List<CourseRecordDetail> courseRecordDetailByCourseId(int courseId) {
         return jpaQueryFactory
-                .select(qRecord)
-                .from(qRecord)
+                .select(Projections.constructor(CourseRecordDetail.class,
+                        qRecord.courseId,
+                        qRecord.recordId,
+                        qRecord.recordContent,
+                        qRecord.recordRegDt,
+                        qRecordImgPath.fileId.min().as("fileId"))).from(qRecord)
                 .leftJoin(qUser).on(qUser.userId.eq(qRecord.userId))
+                .leftJoin(qCourse).on(qCourse.courseId.eq(qRecord.courseId))
+                .leftJoin(qRecordImgPath).on(qRecordImgPath.recordId.eq(qRecord.recordId))
                 .where(qRecord.courseId.eq(courseId))
+                .groupBy(qRecord.recordId)
                 .fetch();
     }
+
 
 
     // 코스 성향 분석 Query
@@ -90,10 +96,11 @@ public class CourseDetailRepositorySpp {
                 .leftJoin(qUser).on(qUser.tourTestId.eq(qTourTest.tourTestId))
                 .leftJoin(qTour).on(qUser.userId.eq(qTour.userId))
                 .leftJoin(qCourse).on(qCourse.courseId.eq(qTour.courseId))
-                .where(qTour.isStart.eq(true).and(qCourse.courseId.eq(courseId)))
+                .where(qTour.isStart.eq(true).and(qCourse.courseId.eq(courseId)).and(qTourTest.tourTestId.lt(7)))
                 .groupBy(qTourTest.tourTestId)
                 .fetch();
     }
+
 
     // 코스 태그 Query
     public List<CourseTagDetail> courseTagDetailByCourseId(int courseId) {

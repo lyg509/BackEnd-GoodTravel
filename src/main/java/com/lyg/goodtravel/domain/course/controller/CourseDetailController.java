@@ -1,9 +1,6 @@
 package com.lyg.goodtravel.domain.course.controller;
 
-import com.lyg.goodtravel.domain.course.db.bean.CourseDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTagDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTourTestResultDetail;
-import com.lyg.goodtravel.domain.course.db.bean.CourseTouristDetail;
+import com.lyg.goodtravel.domain.course.db.bean.*;
 import com.lyg.goodtravel.domain.course.response.*;
 import com.lyg.goodtravel.domain.course.service.CourseDetailService;
 import com.lyg.goodtravel.domain.record.db.entity.Record;
@@ -64,7 +61,7 @@ public class CourseDetailController {
             @ApiParam(value = "코스 구분 번호") @PathVariable("courseId") int courseId) {
         log.info("courseRecordDetail - Call");
 
-        List<Record> courseRecordDetailList = courseDetailService.courseRecordDetail(courseId);
+        List<CourseRecordDetail> courseRecordDetailList = courseDetailService.courseRecordDetail(courseId);
 
         if (courseRecordDetailList != null && !courseRecordDetailList.isEmpty()) {
             return ResponseEntity

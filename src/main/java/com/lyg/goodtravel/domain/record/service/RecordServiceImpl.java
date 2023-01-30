@@ -63,6 +63,7 @@ public class RecordServiceImpl implements RecordService {
         if (tourRepository.existsTourByUserIdAndCourseId(userId, courseId) && tourStampRepository.isStampByUserIdandCourseId(userId, courseId) > 0) {
             record.setCourseId(courseId);
             record.setUserId(userId);
+            if(recordRegisterPostReq.getRecordContent() == null) {record.setRecordContent("");}
             record.setRecordContent(contents);
 
             recordRepository.save(record);
@@ -132,9 +133,15 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public int recordIdPostRes(int courseId, int userId) {
+        return recordRepository.findRecordId(courseId, userId);
+    }
+
+    @Override
     public List<RecordWriteList> recordWriteListByUser(int userId) {
         return recordRepositorySpp.findRecordWriteList(userId);
     }
+
     @Override
     public String getRecordImgPath(int fileId, int recordId, int courseId) {
         RecordImgPath recordImgPath = recordImgPathRepository
@@ -144,11 +151,6 @@ public class RecordServiceImpl implements RecordService {
 
         System.out.println(path);
         return path;
-    }
-
-    @Override
-    public int recordIdPostRes(int courseId, int userId) {
-        return recordRepository.findRecordId(courseId, userId);
     }
 
 }
